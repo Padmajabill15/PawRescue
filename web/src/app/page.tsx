@@ -8,7 +8,7 @@ import { CareSection } from "@/components/landing/vet-care";
 /** The landing page is "night rescue" themed (dark); the app itself follows the user's theme. */
 export default function Home() {
   return (
-    <div className="dark bg-background text-foreground">
+    <div className="bg-background text-foreground">
       <Hero />
       <PhotoBand />
       <HowItWorks />

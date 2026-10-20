@@ -2,8 +2,6 @@
 
 import { Menu, PawPrint, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useSession } from "@/components/session-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -21,10 +19,9 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const { user, loading } = useSession();
-  const pathname = usePathname();
 
   return (
-    <header className={cn("sticky top-0 z-50 border-b bg-background/85 backdrop-blur", pathname === "/" && "dark text-foreground")}>
+    <header className="sticky top-0 z-50 border-b bg-background/85 backdrop-blur">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
