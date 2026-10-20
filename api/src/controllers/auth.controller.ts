@@ -3,6 +3,7 @@ import { z } from "zod";
 import { env } from "../config/env";
 import { User, type UserDoc } from "../models/User";
 import {
+  createGuest,
   issueToken,
   loginWithGoogle,
   loginWithPassword,
@@ -41,6 +42,19 @@ const loginSchema = z.object({
 const googleSchema = z.object({
   credential: z.string().min(10),
   emergency: z.boolean().optional().default(false),
+});
+
+const quickSosSchema = z.object({
+  name: z.string().trim().min(2, "Please enter your name").max(80),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[+]?[0-9][0-9 -]{6,15}$/, "Please enter a valid phone number"),
+});
+
+export const quickSos = asyncHandler(async (req, res) => {
+  const { name, phone } = quickSosSchema.parse(req.body);
+  sendSession(res, await createGuest(name, phone.replace(/[ -]/g, "")), 201);
 });
 
 export const register = asyncHandler(async (req, res) => {

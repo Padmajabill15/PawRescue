@@ -1,6 +1,6 @@
 import { HydratedDocument, InferSchemaType, model, Schema } from "mongoose";
 
-export const AUTH_PROVIDERS = ["google", "otp", "password"] as const;
+export const AUTH_PROVIDERS = ["google", "otp", "password", "guest"] as const;
 export const ROLES = ["user", "ngo", "admin"] as const;
 
 export type AuthProvider = (typeof AUTH_PROVIDERS)[number];

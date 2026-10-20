@@ -11,15 +11,18 @@ const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
 export function GoogleButton({
   emergency = false,
+  hideWhenUnconfigured = false,
   onSuccess,
 }: {
   emergency?: boolean;
+  hideWhenUnconfigured?: boolean;
   onSuccess: (user: SessionUser) => void;
 }) {
   const { resolvedTheme } = useTheme();
   const [error, setError] = useState<string | null>(null);
 
   if (!clientId) {
+    if (hideWhenUnconfigured) return null;
     return (
       <p className="rounded-md border border-dashed px-3 py-2 text-center text-xs text-muted-foreground">
         Google sign-in isn&apos;t configured yet (add NEXT_PUBLIC_GOOGLE_CLIENT_ID).

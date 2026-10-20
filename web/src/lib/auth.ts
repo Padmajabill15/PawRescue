@@ -7,7 +7,7 @@ export interface SessionUser {
   phone?: string;
   avatar?: string;
   role: Role;
-  authProvider: "google" | "otp" | "password";
+  authProvider: "google" | "otp" | "password" | "guest";
   isEmergencyUser: boolean;
 }
 

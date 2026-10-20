@@ -3,7 +3,9 @@
 import { Loader2, Siren } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { OrDivider } from "@/components/auth/auth-shell";
 import { GoogleButton } from "@/components/auth/google-button";
+import { QuickSos } from "./quick-sos";
 import { useSession } from "@/components/session-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +27,7 @@ export default function SosPage() {
             </span>
             <CardTitle className="text-2xl">Emergency rescue</CardTitle>
             <CardDescription>
-              No registration needed. Continue with Google and we&apos;ll alert the nearest verified NGOs.
+              No account needed. Tell us who you are, add a photo, and the nearest verified NGOs are alerted.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -46,17 +48,20 @@ export default function SosPage() {
               </div>
             ) : (
               <>
+                <QuickSos />
+                <OrDivider />
                 <GoogleButton
                   emergency
+                  hideWhenUnconfigured
                   onSuccess={(u) => {
                     setUser(u);
                     router.refresh();
                   }}
                 />
                 <p className="text-center text-sm text-muted-foreground">
-                  No Google account?{" "}
+                  Already have an account?{" "}
                   <Link href="/login?next=/sos" className="font-medium text-primary hover:underline">
-                    Sign in with email
+                    Sign in
                   </Link>
                 </p>
               </>

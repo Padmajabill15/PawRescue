@@ -37,7 +37,7 @@ export function Hero() {
               <Link href="/report">Report a non-urgent case</Link>
             </Button>
           </div>
-          <p className="mt-4 text-sm text-muted-foreground">SOS works with one tap of Google sign-in. No forms to fill first.</p>
+          <p className="mt-4 text-sm text-muted-foreground">For SOS you only need your name and phone number. No account needed.</p>
 
           {stats && (
             <dl className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t pt-6 text-sm">

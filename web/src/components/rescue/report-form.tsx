@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { PickerMap } from "@/components/map";
 import { PhotoPicker } from "@/components/rescue/photo-picker";
+import { useSession } from "@/components/session-provider";
 import { useGeolocation } from "@/components/rescue/use-geolocation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ const FALLBACK = { lat: 15.8497, lng: 74.4977 }; // Belagavi
 export function ReportForm({ emergency = false }: { emergency?: boolean }) {
   const router = useRouter();
   const geo = useGeolocation(true);
+  const { user } = useSession();
   const [files, setFiles] = useState<File[]>([]);
   const [species, setSpecies] = useState<Species>("dog");
   const [isEmergency, setIsEmergency] = useState(emergency);
@@ -159,7 +161,7 @@ export function ReportForm({ emergency = false }: { emergency?: boolean }) {
       )}
 
       <Field label="Your phone (so the NGO can reach you)" htmlFor="contactPhone">
-        <Input id="contactPhone" name="contactPhone" type="tel" maxLength={20} required={emergency} />
+        <Input id="contactPhone" name="contactPhone" type="tel" maxLength={20} required={emergency} defaultValue={user?.phone ?? ""} />
       </Field>
 
       {!emergency && (

@@ -99,6 +99,11 @@ export async function loginWithGoogle(idToken: string, emergency: boolean) {
   return user;
 }
 
+/** Emergency guest: name + phone only, no password. Each quick SOS gets its own account (no takeover by phone number). */
+export function createGuest(name: string, phone: string) {
+  return User.create({ name, phone, authProvider: "guest", role: "user", isEmergencyUser: true });
+}
+
 export async function ensureAdmin() {
   if (!env.ADMIN_EMAIL || !env.ADMIN_PASSWORD) return;
   const exists = await User.exists({ role: "admin" });
