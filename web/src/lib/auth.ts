@@ -9,6 +9,9 @@ export interface SessionUser {
   role: Role;
   authProvider: "google" | "otp" | "password" | "guest";
   isEmergencyUser: boolean;
+  hasPassword?: boolean;
+  deletionRequestedAt?: string | null;
+  createdAt?: string;
 }
 
 export const AUTH_COOKIE = "token";

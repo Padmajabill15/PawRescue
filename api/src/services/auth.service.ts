@@ -8,7 +8,7 @@ import { signToken } from "../utils/jwt";
 
 const googleClient = new OAuth2Client();
 
-export function toPublicUser(user: UserDoc) {
+export function toPublicUser(user: UserDoc & { passwordHash?: string | null }) {
   return {
     id: user._id.toString(),
     name: user.name,
@@ -18,6 +18,9 @@ export function toPublicUser(user: UserDoc) {
     role: user.role,
     authProvider: user.authProvider,
     isEmergencyUser: user.isEmergencyUser,
+    hasPassword: Boolean(user.passwordHash),
+    deletionRequestedAt: user.deletionRequest?.requestedAt ?? null,
+    createdAt: (user as unknown as { createdAt?: Date }).createdAt,
   };
 }
 

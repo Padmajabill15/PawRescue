@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, LogOut } from "lucide-react";
+import { LayoutDashboard, LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "@/components/session-provider";
@@ -57,6 +57,11 @@ export function UserMenu() {
           <Button asChild variant="ghost" className="w-full justify-start" onClick={() => setOpen(false)}>
             <Link href={dashboardPath(user.role)}>
               <LayoutDashboard className="h-4 w-4" /> Dashboard
+            </Link>
+          </Button>
+          <Button asChild variant="ghost" className="w-full justify-start" onClick={() => setOpen(false)}>
+            <Link href={user.role === "user" ? "/dashboard/user/profile" : `/dashboard/${user.role}/profile`}>
+              <UserRound className="h-4 w-4" /> My profile
             </Link>
           </Button>
           <Button variant="ghost" className="w-full justify-start text-destructive" onClick={logout}>

@@ -18,6 +18,11 @@ const userSchema = new Schema(
     role: { type: String, enum: ROLES, default: "user", required: true },
     isEmergencyUser: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
+    deletionRequest: {
+      type: new Schema({ requestedAt: Date, reason: String }, { _id: false }),
+      default: undefined,
+    },
+    deletedAt: { type: Date },
   },
   { timestamps: true },
 );

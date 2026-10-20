@@ -73,7 +73,7 @@ export const google = asyncHandler(async (req, res) => {
 });
 
 export const me = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.auth!.sub);
+  const user = await User.findById(req.auth!.sub).select("+passwordHash");
   if (!user || !user.isActive) throw new AppError(401, "Please sign in");
   res.json({ success: true, data: { user: toPublicUser(user) } });
 });

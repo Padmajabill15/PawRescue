@@ -9,6 +9,7 @@ import {
   PlusCircle,
   Settings,
   ShieldCheck,
+  UserRound,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -26,19 +27,22 @@ export const NAV: Record<Role, NavItem[]> = {
     { href: "/dashboard/user", label: "Overview", icon: LayoutDashboard },
     { href: "/dashboard/user/report", label: "Report a rescue", icon: PlusCircle },
     { href: "/dashboard/user/reports", label: "My reports", icon: ClipboardList },
+    { href: "/dashboard/user/profile", label: "My profile", icon: UserRound },
   ],
   ngo: [
     { href: "/dashboard/ngo", label: "Overview", icon: LayoutDashboard },
     { href: "/dashboard/ngo/requests", label: "Incoming requests", icon: Map },
     { href: "/dashboard/ngo/cases", label: "My cases", icon: HeartPulse },
-    { href: "/dashboard/ngo/settings", label: "NGO profile", icon: Settings, soon: true },
+    { href: "/dashboard/ngo/settings", label: "NGO details", icon: Settings },
+    { href: "/dashboard/ngo/profile", label: "My account", icon: UserRound },
   ],
   admin: [
     { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboard },
     { href: "/dashboard/admin/ngos", label: "NGO approvals", icon: ShieldCheck },
     { href: "/dashboard/admin/requests", label: "All requests", icon: FileWarning },
-    { href: "/dashboard/admin/users", label: "Users", icon: Users, soon: true },
+    { href: "/dashboard/admin/users", label: "Users", icon: Users },
     { href: "/dashboard/admin/analytics", label: "Analytics", icon: BarChart3 },
+    { href: "/dashboard/admin/profile", label: "My account", icon: UserRound },
   ],
 };
 

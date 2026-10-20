@@ -58,6 +58,11 @@ export function LoginForm() {
         <Field label="Password" htmlFor="password">
           <Input id="password" name="password" type="password" autoComplete="current-password" required />
         </Field>
+        <div className="-mt-2 text-right">
+          <Link href="/forgot-password" className="text-sm font-medium text-primary hover:underline">
+            Forgot password?
+          </Link>
+        </div>
         <Button type="submit" className="w-full" disabled={busy}>
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}
           Sign in
