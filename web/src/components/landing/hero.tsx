@@ -3,6 +3,7 @@
 import { Siren } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { HeroWords } from "@/components/landing/hero-words";
 import { RescueDemo } from "@/components/landing/rescue-demo";
 import { Button } from "@/components/ui/button";
 
@@ -19,11 +20,9 @@ export function Hero() {
     <section className="relative overflow-hidden">
       <div className="container grid items-center gap-14 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:py-24">
         <div className="max-w-xl">
-          <h1 className="font-display text-[2.6rem] font-extrabold leading-[1.02] sm:text-6xl lg:text-[4.25rem]">
-            Hurt animal on the road? Get a rescue team there.
-          </h1>
-          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
-            Send a photo and your location. The nearest verified NGO gets alerted, accepts the case, and you follow
+          <HeroWords />
+          <p className="mt-7 max-w-md text-lg leading-relaxed text-muted-foreground">
+            Found a hurt animal on the road? Send a photo and your location. The nearest verified NGO gets alerted, accepts the case, and you follow
             the animal all the way to recovery.
           </p>
 
