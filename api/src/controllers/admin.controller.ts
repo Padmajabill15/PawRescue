@@ -2,7 +2,7 @@ import { isValidObjectId } from "mongoose";
 import { z } from "zod";
 import { VERIFICATION_STATUSES } from "../models/Ngo";
 import { getAdminStats } from "../services/admin.service";
-import { listNgos, reviewNgo } from "../services/ngo.service";
+import { listNgos, listRequestsForAdmin, reviewNgo } from "../services/ngo.service";
 import { AppError } from "../utils/AppError";
 import { asyncHandler } from "../utils/asyncHandler";
 
@@ -26,4 +26,11 @@ export const review = asyncHandler(async (req, res) => {
   if (!isValidObjectId(id)) throw new AppError(400, "Invalid NGO id");
   const { status, reason } = reviewSchema.parse(req.body);
   res.json({ success: true, data: await reviewNgo(id, req.auth!.sub, status, reason) });
+});
+
+const requestsQuery = z.object({ filter: z.enum(["all", "open", "unassigned", "escalated"]).default("all") });
+
+export const requests = asyncHandler(async (req, res) => {
+  const { filter } = requestsQuery.parse(req.query);
+  res.json({ success: true, data: await listRequestsForAdmin(filter) });
 });

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { EmptyState, PageHeader, StatCard } from "@/components/dashboard/stat-card";
 import { FadeIn } from "@/components/motion/fade-in";
+import { useRealtime } from "@/components/realtime-provider";
 import { RequestCard } from "@/components/rescue/request-card";
 import { useSession } from "@/components/session-provider";
 import { Button } from "@/components/ui/button";
@@ -17,9 +18,11 @@ export default function UserDashboard() {
   const first = user?.name.split(" ")[0] ?? "there";
   const [rows, setRows] = useState<RescueRequest[] | null>(null);
 
+  const load = () => api<RescueRequest[]>("/requests/mine").then(setRows).catch(() => setRows([]));
   useEffect(() => {
-    api<RescueRequest[]>("/requests/mine").then(setRows).catch(() => setRows([]));
+    void load();
   }, []);
+  useRealtime("request:updated", () => void load());
 
   const rescued = rows?.filter((r) => ["rescued", "treatment", "recovered", "closed"].includes(r.status)).length;
   const ngos = rows ? new Set(rows.map((r) => r.assignedNgo?._id).filter(Boolean)).size : undefined;

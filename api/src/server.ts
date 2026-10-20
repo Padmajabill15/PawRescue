@@ -3,6 +3,8 @@ import { connectDb, disconnectDb } from "./config/db";
 import { env } from "./config/env";
 import { User } from "./models/User";
 import { ensureAdmin } from "./services/auth.service";
+import { startEscalationJob } from "./services/escalation.service";
+import { initRealtime } from "./services/realtime";
 
 async function main() {
   await connectDb();
@@ -12,6 +14,8 @@ async function main() {
   const server = app.listen(env.PORT, () => {
     console.log(`API listening on http://localhost:${env.PORT}`);
   });
+  initRealtime(server);
+  startEscalationJob();
 
   const shutdown = () => {
     server.close(async () => {

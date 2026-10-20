@@ -2,7 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
+import { RealtimeProvider } from "@/components/realtime-provider";
 import { SessionProvider } from "@/components/session-provider";
+import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
@@ -25,9 +27,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.variable} font-sans min-h-screen flex flex-col`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <SessionProvider>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <RealtimeProvider>
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <Toaster richColors closeButton position="top-right" />
+            </RealtimeProvider>
           </SessionProvider>
         </ThemeProvider>
       </body>

@@ -4,6 +4,7 @@ import { ArrowLeft, Building2, Loader2, MapPin, Phone, Siren } from "lucide-reac
 import Link from "next/link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { MarkersMap } from "@/components/map";
+import { useRealtime } from "@/components/realtime-provider";
 import { HistoryList, StatusStepper } from "@/components/rescue/status-timeline";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +18,9 @@ export function useRequest(id: string) {
     api<RequestDetail>(`/requests/${id}`).then(setData).catch((e: Error) => setError(e.message));
   }, [id]);
   useEffect(load, [load]);
+  const onEvent = (p: { id: string }) => p.id === id && load();
+  useRealtime("request:updated", onEvent);
+  useRealtime("request:taken", onEvent);
   return { data, error, reload: load };
 }
 

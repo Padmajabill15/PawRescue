@@ -11,7 +11,7 @@ import {
 } from "../services/auth.service";
 import { AppError } from "../utils/AppError";
 import { asyncHandler } from "../utils/asyncHandler";
-import { AUTH_COOKIE } from "../utils/jwt";
+import { AUTH_COOKIE, signSocketToken } from "../utils/jwt";
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
@@ -67,4 +67,9 @@ export const me = asyncHandler(async (req, res) => {
 export const logout = asyncHandler(async (_req, res) => {
   res.clearCookie(AUTH_COOKIE, { ...cookieOptions, maxAge: undefined });
   res.json({ success: true });
+});
+
+export const socketToken = asyncHandler(async (req, res) => {
+  const { sub, role, name } = req.auth!;
+  res.json({ success: true, data: { token: signSocketToken({ sub, role, name }) } });
 });

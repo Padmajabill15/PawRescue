@@ -4,6 +4,7 @@ import { ClipboardList, Loader2, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { EmptyState, PageHeader } from "@/components/dashboard/stat-card";
+import { useRealtime } from "@/components/realtime-provider";
 import { RequestCard } from "@/components/rescue/request-card";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
@@ -13,9 +14,11 @@ export default function MyReportsPage() {
   const [rows, setRows] = useState<RescueRequest[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const load = () => api<RescueRequest[]>("/requests/mine").then(setRows).catch((e: Error) => setError(e.message));
   useEffect(() => {
-    api<RescueRequest[]>("/requests/mine").then(setRows).catch((e: Error) => setError(e.message));
+    void load();
   }, []);
+  useRealtime("request:updated", () => void load());
 
   return (
     <>

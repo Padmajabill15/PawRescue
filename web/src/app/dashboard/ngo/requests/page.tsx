@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { EmptyState, PageHeader } from "@/components/dashboard/stat-card";
 import { MarkersMap } from "@/components/map";
+import { useRealtime } from "@/components/realtime-provider";
 import { RequestCard } from "@/components/rescue/request-card";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -38,9 +39,12 @@ export default function NgoRequestsPage() {
 
   useEffect(() => {
     load();
-    const t = setInterval(load, 30000);
+    const t = setInterval(load, 120000); // fallback; live events do the real work
     return () => clearInterval(t);
   }, [load]);
+
+  useRealtime("request:new", load);
+  useRealtime<{ id: string }>("request:taken", ({ id }) => setRows((r) => r?.filter((x) => x._id !== id) ?? null));
 
   const markers = useMemo(
     () =>

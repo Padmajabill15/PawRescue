@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { RequestCard } from "@/components/rescue/request-card";
+import { useRealtime } from "@/components/realtime-provider";
 import type { RescueRequest } from "@/lib/requests";
 
 interface NgoProfile {
@@ -36,6 +37,10 @@ export default function NgoDashboard() {
     api<RescueRequest[]>("/requests/nearby").then(setNearby).catch(() => setNearby([]));
     api<RescueRequest[]>("/requests/cases").then(setCases).catch(() => setCases([]));
   }, []);
+
+  const reloadNearby = () => void api<RescueRequest[]>("/requests/nearby").then(setNearby).catch(() => undefined);
+  useRealtime("request:new", reloadNearby);
+  useRealtime("request:taken", reloadNearby);
 
   const active = cases?.filter((c) => !["recovered", "closed"].includes(c.status)).length;
 

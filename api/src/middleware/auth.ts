@@ -20,7 +20,9 @@ export const requireAuth: RequestHandler = (req, _res, next) => {
 
   if (!token) return next(new AppError(401, "Please sign in"));
   try {
-    req.auth = verifyToken(token);
+    const claims = verifyToken(token);
+    if (claims.typ === "socket") throw new Error("socket token not valid for API");
+    req.auth = claims;
     next();
   } catch {
     next(new AppError(401, "Session expired, please sign in again"));

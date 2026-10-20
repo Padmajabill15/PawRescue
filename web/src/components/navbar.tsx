@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useSession } from "@/components/session-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { NotificationBell } from "@/components/notification-bell";
 import { UserMenu } from "@/components/user-menu";
 import { Button } from "@/components/ui/button";
 import { dashboardPath } from "@/lib/auth";
@@ -51,6 +52,7 @@ export function Navbar() {
           <Button asChild variant="destructive" size="sm" className="hidden md:inline-flex">
             <Link href="/sos">SOS</Link>
           </Button>
+          {user && <NotificationBell />}
           {user && <UserMenu />}
           <Button
             variant="ghost"

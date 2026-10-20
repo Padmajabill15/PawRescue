@@ -44,6 +44,8 @@ const rescueRequestSchema = new Schema(
     nearbyNgoCount: { type: Number, default: 0 },
     acceptedAt: { type: Date },
     closedAt: { type: Date },
+    escalatedAt: { type: Date },
+    escalationLevel: { type: Number, default: 0 },
   },
   { timestamps: true },
 );
@@ -52,6 +54,7 @@ rescueRequestSchema.index({ location: "2dsphere" });
 rescueRequestSchema.index({ status: 1, createdAt: -1 });
 rescueRequestSchema.index({ reporter: 1 });
 rescueRequestSchema.index({ assignedNgo: 1 });
+rescueRequestSchema.index({ status: 1, escalationLevel: 1, createdAt: 1 });
 
 export type IRescueRequest = InferSchemaType<typeof rescueRequestSchema>;
 export type RescueRequestDoc = HydratedDocument<IRescueRequest>;

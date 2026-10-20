@@ -25,6 +25,12 @@ user | ngo | admin. JWT in httpOnly cookie `token`; web proxies /api -> API (nex
 - Severity: rule-based utils/triage.ts (ML replaces later)
 - web: Leaflet/OSM maps in components/map (dynamic, ssr:false); ReportForm used by /dashboard/user/report and /sos
 
+## Realtime & alerts (Phase 4 done)
+- socket.io on the API (services/realtime.ts); rooms user:<id> and admins. Client gets a 5-min socket token from /api/auth/socket-token (session cookie stays httpOnly) and connects to NEXT_PUBLIC_SOCKET_URL
+- Events: request:new, request:taken, request:updated, notification:new. Web hook: useRealtime(event, fn)
+- Notifications persisted (models/Notification.ts, 60-day TTL) + bell in navbar + sonner toasts + optional desktop alerts
+- Escalation job (services/escalation.service.ts, every 60s): unaccepted after 10 min (SOS 5 min) -> NGOs within 30 km + admins; second level -> admins again
+
 ## Conventions
 - TypeScript strict, async/await, Zod for validation
 - api: routes -> controllers -> services -> models
