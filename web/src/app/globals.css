@@ -33,23 +33,24 @@
   }
 
   .dark {
-    --background: 212 30% 8%;
-    --foreground: 100 9% 94%;
-    --card: 212 27% 11%;
-    --card-foreground: 100 9% 94%;
-    --primary: 161 62% 45%;
-    --primary-foreground: 212 30% 8%;
-    --secondary: 212 20% 17%;
-    --secondary-foreground: 100 9% 94%;
-    --muted: 212 20% 15%;
-    --muted-foreground: 210 10% 68%;
-    --accent: 41 85% 58%;
-    --accent-foreground: 212 30% 8%;
-    --destructive: 16 100% 60%;
+    /* "night rescue": forest-black, glowing rescue green, amber, hi-vis SOS orange */
+    --background: 162 31% 6%;       /* #0B1512 */
+    --foreground: 140 18% 93%;      /* #ECF2EE */
+    --card: 162 26% 9%;
+    --card-foreground: 140 18% 93%;
+    --primary: 158 66% 50%;         /* #2BD496 */
+    --primary-foreground: 162 31% 6%;
+    --secondary: 162 20% 14%;
+    --secondary-foreground: 140 18% 93%;
+    --muted: 162 18% 13%;
+    --muted-foreground: 150 10% 68%;
+    --accent: 40 91% 61%;           /* #F6B941 */
+    --accent-foreground: 162 31% 6%;
+    --destructive: 16 100% 56%;     /* #FF5A1F */
     --destructive-foreground: 0 0% 100%;
-    --border: 212 18% 20%;
-    --input: 212 18% 24%;
-    --ring: 161 62% 45%;
+    --border: 160 16% 17%;
+    --input: 160 16% 21%;
+    --ring: 158 66% 50%;
     --series-1: #3987e5;
     --series-2: #199e70;
     --sev-low: #8f8e88;

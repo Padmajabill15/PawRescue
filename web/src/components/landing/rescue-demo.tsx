@@ -28,7 +28,7 @@ export function RescueDemo() {
 
   return (
     <div className="relative mx-auto w-full max-w-[340px]" aria-label="Example rescue, from report to rescue">
-      <div className="rounded-[2.4rem] border-[10px] border-foreground bg-card shadow-[0_30px_60px_-20px_hsl(var(--foreground)/0.35)]">
+      <div className="rounded-[2.4rem] border-[10px] border-[#050a08] bg-card shadow-[0_40px_100px_-30px_hsl(var(--primary)/0.45)] ring-1 ring-white/10">
         {/* Map */}
         <div className="relative h-56 overflow-hidden rounded-t-[1.7rem] bg-secondary">
           <svg viewBox="0 0 320 224" className="absolute inset-0 h-full w-full" aria-hidden>

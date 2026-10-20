@@ -19,7 +19,7 @@ export function HowItWorks() {
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
 
   return (
-    <section id="how-it-works" className="dark overflow-x-clip bg-background text-foreground">
+    <section id="how-it-works" className="overflow-x-clip border-y bg-card/40 text-foreground">
       <div className="container grid gap-14 py-24 lg:grid-cols-[1fr_1.1fr] lg:items-start">
         <div className="lg:sticky lg:top-28">
           <h2 className="max-w-md font-display text-4xl font-bold sm:text-5xl">From the roadside to recovery, in four stops</h2>

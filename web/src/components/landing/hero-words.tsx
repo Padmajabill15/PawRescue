@@ -22,7 +22,7 @@ export function HeroWords() {
           {/* fill layer wipes in left to right */}
           <motion.span
             className="absolute inset-0 block"
-            style={{ color: w.color }}
+            style={{ color: w.color, textShadow: i === 0 ? undefined : `0 0 40px ${w.color.replace(")", " / .45)")}` }}
             initial={reduce ? false : { clipPath: "inset(0 100% 0 0)" }}
             animate={{ clipPath: "inset(0 0% 0 0)" }}
             transition={{ duration: 0.9, delay: 0.35 + i * 0.55, ease: [0.65, 0, 0.35, 1] }}

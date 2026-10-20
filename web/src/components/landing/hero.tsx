@@ -18,6 +18,8 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute -left-40 top-10 h-[420px] w-[420px] rounded-full bg-primary/20 blur-[120px]" />
+      <div aria-hidden className="pointer-events-none absolute -right-20 bottom-0 h-[360px] w-[360px] rounded-full bg-destructive/15 blur-[120px]" />
       <div className="container grid items-center gap-14 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:py-24">
         <div className="max-w-xl">
           <HeroWords />
