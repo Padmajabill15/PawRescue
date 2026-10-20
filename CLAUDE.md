@@ -43,6 +43,10 @@ user | ngo | admin. JWT in httpOnly cookie `token`; web proxies /api -> API (nex
 - Demo data: services/demo.service.ts (seeded PRNG, isDemo flag, @demo.pawrescue.dev users); POST /api/admin/demo-data {action: seed|purge}; excluded from NGO lists + escalation
 - web: /dashboard/admin/analytics (Recharts, CSS chart vars in globals.css, Leaflet PointsMap)
 
+## Phase 7 (polish/deploy)
+- middleware/rateLimit.ts (in-memory): auth 20/15min, reports 10/10min, api 600/min
+- render.yaml (API), ml/Dockerfile (HF Spaces, port 7860), Vercel root = web. README has the deploy table
+
 ## Conventions
 - TypeScript strict, async/await, Zod for validation
 - api: routes -> controllers -> services -> models

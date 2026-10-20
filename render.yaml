@@ -1,0 +1,36 @@
+# Render Blueprint for the API (Express + socket.io). Web goes to Vercel, ML to Hugging Face Spaces.
+services:
+  - type: web
+    name: pawrescue-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build -w api
+    startCommand: npm run start -w api
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_ORIGIN
+        sync: false # https://<your-app>.vercel.app
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: ML_URL
+        sync: false # https://<user>-pawrescue-ml.hf.space
+      - key: ML_TIMEOUT_MS
+        value: "15000"
+      - key: ALLOW_DEMO_DATA
+        value: "true"

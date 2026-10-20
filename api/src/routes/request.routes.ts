@@ -10,13 +10,14 @@ import {
   setStatus,
 } from "../controllers/request.controller";
 import { requireAuth, requireRole } from "../middleware/auth";
+import { reportLimiter } from "../middleware/rateLimit";
 import { imageUpload } from "../services/upload.service";
 
 const router = Router();
 
 router.use(requireAuth);
 
-router.post("/", requireRole("user"), imageUpload.array("images", 5), create);
+router.post("/", requireRole("user"), reportLimiter, imageUpload.array("images", 5), create);
 router.get("/mine", requireRole("user"), mine);
 router.get("/nearby", requireRole("ngo"), nearby);
 router.get("/cases", requireRole("ngo"), cases);
