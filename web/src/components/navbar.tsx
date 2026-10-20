@@ -12,8 +12,8 @@ import { dashboardPath } from "@/lib/auth";
 
 const links = [
   { href: "/#how-it-works", label: "How it works" },
-  { href: "/#impact", label: "Impact" },
-  { href: "/ngo/apply", label: "For NGOs" },
+  { href: "/report", label: "Report a case" },
+  { href: "/#for-ngos", label: "For NGOs" },
 ];
 
 export function Navbar() {
@@ -21,13 +21,13 @@ export function Navbar() {
   const { user, loading } = useSession();
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b bg-background/85 backdrop-blur">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-semibold">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <PawPrint className="h-5 w-5" />
           </span>
-          <span className="text-lg">PawRescue</span>
+          <span className="font-display text-xl font-bold">PawRescue</span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">

@@ -1,71 +1,62 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Siren } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { RescueDemo } from "@/components/landing/rescue-demo";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
+  const [stats, setStats] = useState<{ reported: number; rescued: number; ngos: number } | null>(null);
+  useEffect(() => {
+    fetch("/api/public/stats")
+      .then((r) => r.json())
+      .then((b) => b.success && setStats(b.data))
+      .catch(() => undefined);
+  }, []);
+
   return (
     <section className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
-      <div className="container flex flex-col items-center py-16 text-center sm:py-24">
-        <motion.span
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="rounded-full border bg-card px-3 py-1 text-xs font-medium text-primary"
-        >
-          Verified rescue NGOs, near you
-        </motion.span>
+      <div className="container grid items-center gap-14 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:py-24">
+        <div className="max-w-xl">
+          <h1 className="font-display text-[2.6rem] font-extrabold leading-[1.02] sm:text-6xl lg:text-[4.25rem]">
+            Hurt animal on the road? Get a rescue team there.
+          </h1>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+            Send a photo and your location. The nearest verified NGO gets alerted, accepts the case, and you follow
+            the animal all the way to recovery.
+          </p>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="mt-5 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl"
-        >
-          Found an injured animal? <span className="text-primary">Help is minutes away.</span>
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-5 max-w-xl text-base text-muted-foreground sm:text-lg"
-        >
-          Share a photo and your location. The nearest verified NGO accepts, rescues, and keeps you
-          updated until the animal recovers.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-10 flex flex-col items-center gap-4"
-        >
-          <div className="relative">
-            <span className="absolute inset-0 rounded-full bg-destructive animate-sos-ping" aria-hidden />
-            <Button
-              asChild
-              variant="destructive"
-              className="relative h-32 w-32 rounded-full text-xl font-extrabold shadow-xl sm:h-36 sm:w-36"
-            >
-              <Link href="/sos" aria-label="Send an emergency SOS">
-                <span className="flex flex-col items-center gap-1">
-                  <Siren className="h-8 w-8" />
-                  SOS
-                </span>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild variant="destructive" className="h-14 rounded-xl px-7 text-lg font-bold shadow-[0_10px_24px_-8px_hsl(var(--destructive)/0.7)]">
+              <Link href="/sos">
+                <Siren className="h-5 w-5" /> Send emergency SOS
               </Link>
             </Button>
+            <Button asChild variant="outline" className="h-14 rounded-xl px-6 text-base">
+              <Link href="/report">Report a non-urgent case</Link>
+            </Button>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Emergency? Sign in with Google and report in seconds.
-          </p>
-          <Button asChild variant="link">
-            <Link href="/report">Or file a regular report</Link>
-          </Button>
-        </motion.div>
+          <p className="mt-4 text-sm text-muted-foreground">SOS works with one tap of Google sign-in. No forms to fill first.</p>
+
+          {stats && (
+            <dl className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t pt-6 text-sm">
+              {[
+                [stats.reported, "animals reported"],
+                [stats.rescued, "rescued so far"],
+                [stats.ngos, "verified NGOs"],
+              ].map(([n, label]) => (
+                <div key={label as string} className="flex items-baseline gap-2">
+                  <dt className="sr-only">{label}</dt>
+                  <dd className="font-display text-2xl font-bold tabular-nums">{n}</dd>
+                  <span className="text-muted-foreground">{label}</span>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
+
+        <RescueDemo />
       </div>
     </section>
   );

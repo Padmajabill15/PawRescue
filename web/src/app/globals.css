@@ -4,24 +4,25 @@
 
 @layer base {
   :root {
-    --background: 40 40% 97%;
-    --foreground: 185 30% 12%;
-    --card: 40 45% 99%;
-    --card-foreground: 185 30% 12%;
-    --primary: 174 62% 28%;
-    --primary-foreground: 40 40% 98%;
-    --secondary: 38 55% 90%;
-    --secondary-foreground: 185 30% 16%;
-    --muted: 38 30% 93%;
-    --muted-foreground: 185 12% 38%;
-    --accent: 24 90% 56%;
-    --accent-foreground: 20 40% 10%;
-    --destructive: 6 82% 52%;
+    /* PawRescue: emergency signage x vet field kit */
+    --background: 100 9% 97%;       /* cool paper #F6F7F5 */
+    --foreground: 211 31% 13%;      /* slate ink #16202B */
+    --card: 0 0% 100%;
+    --card-foreground: 211 31% 13%;
+    --primary: 163 83% 26%;         /* clinic scrub green #0B7A5C */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 22% 91%;
+    --secondary-foreground: 211 31% 16%;
+    --muted: 120 6% 93%;
+    --muted-foreground: 211 12% 38%;
+    --accent: 41 82% 53%;           /* turmeric #E9A825 */
+    --accent-foreground: 211 31% 13%;
+    --destructive: 16 100% 56%;     /* hi-vis orange #FF5A1F (SOS) */
     --destructive-foreground: 0 0% 100%;
-    --border: 38 22% 85%;
-    --input: 38 22% 85%;
-    --ring: 174 62% 28%;
-    --radius: 0.75rem;
+    --border: 150 8% 86%;
+    --input: 150 8% 82%;
+    --ring: 163 83% 26%;
+    --radius: 0.625rem;
     /* chart roles (validated categorical slots) */
     --series-1: #2a78d6;
     --series-2: #1baf7a;
@@ -32,23 +33,23 @@
   }
 
   .dark {
-    --background: 186 28% 8%;
-    --foreground: 40 30% 94%;
-    --card: 186 24% 11%;
-    --card-foreground: 40 30% 94%;
-    --primary: 172 55% 46%;
-    --primary-foreground: 186 40% 8%;
-    --secondary: 186 18% 17%;
-    --secondary-foreground: 40 30% 94%;
-    --muted: 186 16% 15%;
-    --muted-foreground: 185 10% 66%;
-    --accent: 24 85% 58%;
-    --accent-foreground: 20 40% 8%;
-    --destructive: 6 78% 56%;
+    --background: 212 30% 8%;
+    --foreground: 100 9% 94%;
+    --card: 212 27% 11%;
+    --card-foreground: 100 9% 94%;
+    --primary: 161 62% 45%;
+    --primary-foreground: 212 30% 8%;
+    --secondary: 212 20% 17%;
+    --secondary-foreground: 100 9% 94%;
+    --muted: 212 20% 15%;
+    --muted-foreground: 210 10% 68%;
+    --accent: 41 85% 58%;
+    --accent-foreground: 212 30% 8%;
+    --destructive: 16 100% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 186 15% 20%;
-    --input: 186 15% 20%;
-    --ring: 172 55% 46%;
+    --border: 212 18% 20%;
+    --input: 212 18% 24%;
+    --ring: 161 62% 45%;
     --series-1: #3987e5;
     --series-2: #199e70;
     --sev-low: #8f8e88;
@@ -63,5 +64,28 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }

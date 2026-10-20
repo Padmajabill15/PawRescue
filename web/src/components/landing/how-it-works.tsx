@@ -1,49 +1,36 @@
-import { Camera, HeartPulse, MapPin } from "lucide-react";
-import { FadeIn } from "@/components/motion/fade-in";
+import { Camera, HeartPulse, MapPinned, Truck } from "lucide-react";
 
-const steps = [
-  {
-    icon: Camera,
-    title: "Report",
-    text: "Snap a photo, add your GPS location and a short description. No full registration in an emergency.",
-  },
-  {
-    icon: MapPin,
-    title: "Nearest NGO accepts",
-    text: "Verified NGOs close to the animal are alerted and one accepts the rescue.",
-  },
-  {
-    icon: HeartPulse,
-    title: "Rescue & recovery",
-    text: "Follow live status updates with photos from rescue through treatment to recovery.",
-  },
+const STOPS = [
+  { icon: Camera, title: "You report", text: "Snap a photo. Your location is filled in, and AI recognises the animal and how badly it's hurt." },
+  { icon: MapPinned, title: "NGOs are alerted", text: "Verified NGOs whose area covers the spot get an alert. Emergencies go to the top of their list." },
+  { icon: Truck, title: "A team comes", text: "One NGO accepts, so no one is sent twice. You see when they're on the way." },
+  { icon: HeartPulse, title: "You see recovery", text: "Treatment notes and photos arrive on your report until the animal is healthy again." },
 ];
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="scroll-mt-16 py-16 sm:py-20">
-      <div className="container">
-        <FadeIn className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How it works</h2>
-          <p className="mt-3 text-muted-foreground">Three simple steps from spotting an animal to seeing it recover.</p>
-        </FadeIn>
+    <section id="how-it-works" className="border-y bg-card">
+      <div className="container py-20">
+        <h2 className="max-w-lg font-display text-3xl font-bold sm:text-4xl">From the roadside to recovery, in four stops</h2>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {steps.map((s, i) => (
-            <FadeIn key={s.title} delay={i * 0.1}>
-              <div className="h-full rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
-                <div className="flex items-center justify-between">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-primary">
-                    <s.icon className="h-6 w-6" />
-                  </span>
-                  <span className="text-3xl font-bold text-muted-foreground/40">{i + 1}</span>
-                </div>
-                <h3 className="mt-4 text-lg font-semibold">{s.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{s.text}</p>
+        <ol className="relative mt-14 grid gap-10 md:grid-cols-4 md:gap-6">
+          {/* the route line joining the stops */}
+          <span aria-hidden className="absolute left-5 top-5 hidden h-0 w-[calc(100%-2.5rem)] border-t-2 border-dashed border-primary/40 md:block" />
+          <span aria-hidden className="absolute bottom-5 left-5 top-5 w-0 border-l-2 border-dashed border-primary/40 md:hidden" />
+          {STOPS.map(({ icon: Icon, title, text }, i) => (
+            <li key={title} className="relative flex gap-4 md:block">
+              <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary font-display text-lg font-bold text-primary-foreground ring-8 ring-card">
+                {i + 1}
+              </span>
+              <div className="md:mt-5">
+                <h3 className="flex items-center gap-2 text-lg font-bold">
+                  <Icon className="h-4 w-4 text-primary" /> {title}
+                </h3>
+                <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground">{text}</p>
               </div>
-            </FadeIn>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );

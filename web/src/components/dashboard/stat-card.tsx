@@ -25,8 +25,8 @@ export function StatCard({
         <Icon className="h-5 w-5" />
       </span>
       <div>
-        <p className="text-2xl font-bold tabular-nums">{value}</p>
-        <p className="text-sm text-muted-foreground">{label}</p>
+        <p className="font-display text-3xl font-bold leading-none tabular-nums">{value}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{label}</p>
       </div>
     </Card>
   );
@@ -46,7 +46,7 @@ export function PageHeader({ title, subtitle, children }: { title: string; subti
   return (
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>
+        <h1 className="font-display text-3xl font-bold sm:text-4xl">{title}</h1>
         {subtitle && <p className="mt-1 text-muted-foreground">{subtitle}</p>}
       </div>
       {children}

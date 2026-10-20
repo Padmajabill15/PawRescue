@@ -12,6 +12,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "var(--font-sans)", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -50,6 +51,10 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        "route-draw": {
+          from: { strokeDashoffset: "var(--route-len, 600)" },
+          to: { strokeDashoffset: "0" },
+        },
         "sos-ping": {
           "0%": { transform: "scale(1)", opacity: "0.55" },
           "100%": { transform: "scale(1.6)", opacity: "0" },
