@@ -31,6 +31,13 @@ user | ngo | admin. JWT in httpOnly cookie `token`; web proxies /api -> API (nex
 - Notifications persisted (models/Notification.ts, 60-day TTL) + bell in navbar + sonner toasts + optional desktop alerts
 - Escalation job (services/escalation.service.ts, every 60s): unaccepted after 10 min (SOS 5 min) -> NGOs within 30 km + admins; second level -> admins again
 
+## AI service (Phase 5 done)
+- ml/: FastAPI + CLIP (openai/clip-vit-base-patch32, zero-shot, prompt ensembles in app/labels.py). Endpoints /health, /species, /analyze
+- Severity = explainable score 0-100 (app/severity.py): text rules + photo injury prob + SOS flag, with reasons
+- API calls it via services/ml.service.ts (timeout, null on failure -> keyword fallback utils/triage.ts); stores request.ai + embedding (select:false)
+- Duplicates: same area (500 m) + 48 h + open + cosine >= 0.9 -> duplicateOf; NGOs not re-alerted, duplicate reporters follow the original
+- Setup: npm run setup:ml (Python 3.12 venv in ml/.venv); npm run dev starts web + api + ml
+
 ## Conventions
 - TypeScript strict, async/await, Zod for validation
 - api: routes -> controllers -> services -> models

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Building2, Loader2, MapPin, Phone, Siren } from "lucide-react";
+import { ArrowLeft, Building2, Copy, Loader2, MapPin, Phone, Siren, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { MarkersMap } from "@/components/map";
@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { SEVERITY_BADGE, SPECIES_EMOJI, STATUS_LABEL, timeAgo, type RequestDetail } from "@/lib/requests";
+import { cn } from "@/lib/utils";
 
 export function useRequest(id: string) {
   const [data, setData] = useState<RequestDetail | null>(null);
@@ -22,6 +23,69 @@ export function useRequest(id: string) {
   useRealtime("request:updated", onEvent);
   useRealtime("request:taken", onEvent);
   return { data, error, reload: load };
+}
+
+const SEVERITY_BAR = { low: "bg-muted-foreground/50", medium: "bg-primary", high: "bg-amber-500", critical: "bg-destructive" } as const;
+
+function AiCard({ data }: { data: RequestDetail }) {
+  const ai = data.ai;
+  if (!ai) return null;
+  const pct = (n?: number) => (n === undefined ? "–" : `${Math.round(n * 100)}%`);
+  const speciesMismatch = ai.species && ai.species !== data.species && (ai.speciesConfidence ?? 0) >= 0.6;
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Sparkles className="h-4 w-4 text-primary" /> AI triage
+          <Badge variant="muted" className="ml-auto font-normal">
+            {ai.source === "model" ? "CLIP vision + text" : "Keyword rules (AI offline)"}
+          </Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4 text-sm">
+        {ai.severityScore !== undefined && (
+          <div>
+            <div className="mb-1 flex justify-between">
+              <span className="text-muted-foreground">Severity score</span>
+              <span className="font-semibold capitalize">
+                {ai.severityScore}/100 · {data.severity}
+              </span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-full bg-muted">
+              <div className={cn("h-full rounded-full", SEVERITY_BAR[data.severity])} style={{ width: `${ai.severityScore}%` }} />
+            </div>
+          </div>
+        )}
+        {ai.source === "model" && (
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-lg bg-muted/60 p-3">
+              <p className="text-xs text-muted-foreground">Species in photo</p>
+              <p className="font-medium capitalize">
+                {ai.species ? `${SPECIES_EMOJI[ai.species] ?? ""} ${ai.species}` : "–"} <span className="text-muted-foreground">{pct(ai.speciesConfidence)}</span>
+              </p>
+            </div>
+            <div className="rounded-lg bg-muted/60 p-3">
+              <p className="text-xs text-muted-foreground">Looks injured</p>
+              <p className="font-medium">{pct(ai.injuryProbability)}</p>
+            </div>
+          </div>
+        )}
+        {speciesMismatch && (
+          <p className="rounded-md bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+            Reporter chose &ldquo;{data.species}&rdquo; but the photo looks like a {ai.species}.
+          </p>
+        )}
+        {ai.reasons && ai.reasons.length > 0 && (
+          <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+            {ai.reasons.map((r) => (
+              <li key={r}>{r}</li>
+            ))}
+          </ul>
+        )}
+        <p className="text-xs text-muted-foreground">A suggestion to help prioritise. The NGO&apos;s assessment always comes first.</p>
+      </CardContent>
+    </Card>
+  );
 }
 
 export function RequestDetailView({
@@ -60,6 +124,20 @@ export function RequestDetailView({
       </Link>
 
       {banner}
+
+      {data.duplicateOf && typeof data.duplicateOf === "object" && (
+        <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm">
+          <Copy className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <div>
+            <p className="font-medium">This animal was already reported{data.duplicateScore ? ` (photo match ${Math.round(data.duplicateScore * 100)}%)` : ""}.</p>
+            <p className="text-muted-foreground">
+              We linked your report to the existing case, so no second rescue team is sent. Current status:{" "}
+              <span className="font-medium text-foreground">{STATUS_LABEL[data.duplicateOf.status]}</span>
+              {data.duplicateOf.assignedNgo ? ` · handled by ${data.duplicateOf.assignedNgo.name}` : " · waiting for an NGO"}. You&apos;ll get its updates.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center gap-2">
         <h1 className="text-2xl font-bold capitalize sm:text-3xl">
@@ -137,6 +215,7 @@ export function RequestDetailView({
         </div>
 
         <div className="space-y-6">
+          <AiCard data={data} />
           <Card className="overflow-hidden">
             <div className="h-56">
               <MarkersMap

@@ -6,7 +6,9 @@
     "api"
   ],
   "scripts": {
-    "dev": "concurrently -n web,api -c cyan,green \"npm run dev -w web\" \"npm run dev -w api\""
+    "dev": "concurrently -n web,api,ml -c cyan,green,magenta \"npm run dev -w web\" \"npm run dev -w api\" \"npm run dev:ml\"",
+    "dev:ml": "cd ml && .venv\\Scripts\\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000",
+    "setup:ml": "py -3.12 -m venv ml\\.venv && ml\\.venv\\Scripts\\python.exe -m pip install --upgrade pip && ml\\.venv\\Scripts\\python.exe -m pip install -r ml\\requirements.txt"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"

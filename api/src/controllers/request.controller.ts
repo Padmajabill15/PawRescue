@@ -12,6 +12,7 @@ import {
   listMyRequests,
   nearbyForNgo,
 } from "../services/request.service";
+import { analyzeReport, mlHealth, suggestSpecies } from "../services/ml.service";
 import { saveImages } from "../services/upload.service";
 import { AppError } from "../utils/AppError";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -47,8 +48,11 @@ export const create = asyncHandler(async (req, res) => {
   const body = createSchema.parse(req.body);
   const files = req.files as Express.Multer.File[] | undefined;
   if (!files?.length) throw new AppError(400, "Please add at least one photo of the animal");
-  const images = await saveImages(files, "requests");
-  const result = await createRequest({ ...body, reporter: req.auth!.sub, images });
+  const [images, analysis] = await Promise.all([
+    saveImages(files, "requests"),
+    analyzeReport(files, body.description, body.isEmergency),
+  ]);
+  const result = await createRequest({ ...body, reporter: req.auth!.sub, images, analysis });
   res.status(201).json({ success: true, data: result });
 });
 
@@ -82,4 +86,14 @@ export const postUpdate = asyncHandler(async (req, res) => {
   const { notes } = updateSchema.parse(req.body);
   const images = await saveImages(req.files as Express.Multer.File[] | undefined, "updates");
   res.status(201).json({ success: true, data: await addTreatmentUpdate(id, req.auth!.sub, notes, images) });
+});
+
+export const aiSpecies = asyncHandler(async (req, res) => {
+  if (!req.file) throw new AppError(400, "Please attach a photo");
+  const result = await suggestSpecies(req.file);
+  res.json({ success: true, data: result ?? { top: [] } });
+});
+
+export const aiHealth = asyncHandler(async (_req, res) => {
+  res.json({ success: true, data: await mlHealth() });
 });

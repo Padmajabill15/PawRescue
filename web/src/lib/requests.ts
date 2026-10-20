@@ -57,6 +57,20 @@ export interface RescueRequest {
   createdAt: string;
   updatedAt: string;
   distanceKm?: number;
+  ai?: {
+    source: "model" | "rules";
+    species?: Species;
+    speciesConfidence?: number;
+    speciesTop?: { label: Species; confidence: number }[];
+    injuryProbability?: number;
+    severityScore?: number;
+    reasons?: string[];
+    model?: string;
+    ms?: number;
+  };
+  duplicateOf?: { _id: string; status: RequestStatus; createdAt: string; assignedNgo?: { name: string; phone?: string } | null } | string | null;
+  duplicateScore?: number;
+  escalationLevel?: number;
 }
 
 export interface TreatmentUpdate {

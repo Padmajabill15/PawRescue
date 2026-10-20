@@ -25,7 +25,7 @@ export function RequestCard({ r, href, action }: { r: RescueRequest; href: strin
           <Badge variant={SEVERITY_BADGE[r.severity]} className="capitalize">
             {r.severity}
           </Badge>
-          <Badge variant="muted">{STATUS_LABEL[r.status]}</Badge>
+          {r.duplicateOf ? <Badge variant="muted">Already reported · linked</Badge> : <Badge variant="muted">{STATUS_LABEL[r.status]}</Badge>}
         </div>
         <Link href={href} className="font-medium capitalize hover:text-primary">
           {SPECIES_EMOJI[r.species]} {r.species}

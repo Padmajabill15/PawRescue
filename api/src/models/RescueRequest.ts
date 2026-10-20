@@ -25,6 +25,21 @@ const statusHistorySchema = new Schema(
   { _id: false },
 );
 
+const aiSchema = new Schema(
+  {
+    species: { type: String },
+    speciesConfidence: { type: Number },
+    speciesTop: { type: [{ label: String, confidence: Number, _id: false }], default: undefined },
+    injuryProbability: { type: Number },
+    severityScore: { type: Number },
+    reasons: { type: [String], default: undefined },
+    source: { type: String, enum: ["model", "rules"], default: "rules" },
+    model: { type: String },
+    ms: { type: Number },
+  },
+  { _id: false },
+);
+
 const rescueRequestSchema = new Schema(
   {
     reporter: { type: Schema.Types.ObjectId, ref: "User", required: true },
@@ -42,6 +57,9 @@ const rescueRequestSchema = new Schema(
     statusHistory: { type: [statusHistorySchema], default: [] },
     duplicateOf: { type: Schema.Types.ObjectId, ref: "RescueRequest" },
     nearbyNgoCount: { type: Number, default: 0 },
+    ai: { type: aiSchema },
+    embedding: { type: [Number], select: false },
+    duplicateScore: { type: Number },
     acceptedAt: { type: Date },
     closedAt: { type: Date },
     escalatedAt: { type: Date },

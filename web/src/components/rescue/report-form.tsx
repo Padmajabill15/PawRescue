@@ -1,8 +1,8 @@
 "use client";
 
-import { Loader2, LocateFixed, Send, Siren } from "lucide-react";
+import { Loader2, LocateFixed, Send, Siren, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { PickerMap } from "@/components/map";
 import { PhotoPicker } from "@/components/rescue/photo-picker";
 import { useGeolocation } from "@/components/rescue/use-geolocation";
@@ -26,6 +26,30 @@ export function ReportForm({ emergency = false }: { emergency?: boolean }) {
   const [error, setError] = useState<string | null>(null);
 
   const pos = geo.coords ?? FALLBACK;
+
+  // AI species suggestion from the first photo (silently skipped if the AI service is offline)
+  const [suggestion, setSuggestion] = useState<{ label: Species; confidence: number } | null>(null);
+  const [suggesting, setSuggesting] = useState(false);
+  const touchedSpecies = useRef(false);
+  const firstFile = files[0];
+  useEffect(() => {
+    if (!firstFile) return setSuggestion(null);
+    let cancelled = false;
+    const body = new FormData();
+    body.append("image", firstFile);
+    setSuggesting(true);
+    api<{ top: { label: Species; confidence: number }[] }>("/ai/species", { method: "POST", body })
+      .then(({ top }) => {
+        if (cancelled || !top[0] || top[0].confidence < 0.4) return;
+        setSuggestion(top[0]);
+        if (!touchedSpecies.current) setSpecies(top[0].label);
+      })
+      .catch(() => undefined)
+      .finally(() => !cancelled && setSuggesting(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [firstFile]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -82,14 +106,30 @@ export function ReportForm({ emergency = false }: { emergency?: boolean }) {
       </section>
 
       <section className="space-y-2">
-        <span className="text-sm font-medium">Animal</span>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="text-sm font-medium">Animal</span>
+          {suggesting ? (
+            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Loader2 className="h-3 w-3 animate-spin" /> AI is looking at your photo…
+            </span>
+          ) : (
+            suggestion && (
+              <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                <Sparkles className="h-3 w-3" /> AI thinks it&apos;s a {suggestion.label} ({Math.round(suggestion.confidence * 100)}%)
+              </span>
+            )
+          )}
+        </div>
         <div className="flex flex-wrap gap-2">
           {SPECIES.map((s) => (
             <button
               key={s}
               type="button"
               aria-pressed={species === s}
-              onClick={() => setSpecies(s)}
+              onClick={() => {
+                touchedSpecies.current = true;
+                setSpecies(s);
+              }}
               className={cn(
                 "rounded-full border px-3 py-1.5 text-sm capitalize transition-colors",
                 species === s ? "border-primary bg-primary text-primary-foreground" : "hover:bg-muted",

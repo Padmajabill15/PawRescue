@@ -19,7 +19,7 @@ const FILTERS = [
 ] as const;
 type Filter = (typeof FILTERS)[number]["key"];
 
-type Row = RescueRequest & { escalationLevel?: number };
+type Row = RescueRequest;
 
 function Inner() {
   const router = useRouter();
@@ -72,6 +72,7 @@ function Inner() {
               href={`/dashboard/admin/requests/${r._id}`}
               action={
                 <span className="flex items-center gap-1.5">
+                  {r.duplicateOf && <Badge variant="muted">Duplicate</Badge>}
                   {(r.escalationLevel ?? 0) > 0 && r.status === "submitted" && <Badge variant="danger">Escalated</Badge>}
                   <span>{r.assignedNgo?.name ?? "No NGO yet"}</span>
                 </span>

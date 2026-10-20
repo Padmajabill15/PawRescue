@@ -5,6 +5,7 @@ import { RescueRequest, type RequestStatus, type RescueRequestDoc } from "../mod
 import { TreatmentUpdate } from "../models/TreatmentUpdate";
 import type { Role } from "../models/User";
 import { AppError } from "../utils/AppError";
+import { cosine, type MlAnalysis } from "./ml.service";
 import { adminIds, notify } from "./notification.service";
 import { emitToAdmins, emitToUsers } from "./realtime";
 import { triageSeverity } from "../utils/triage";
@@ -39,10 +40,38 @@ export interface NewRequest {
   animalCount: number;
   isEmergency: boolean;
   images: string[];
+  analysis: MlAnalysis | null;
+}
+
+const DUP_RADIUS_M = 500;
+const DUP_WINDOW_H = 48;
+const DUP_SIMILARITY = 0.9;
+
+/** Same animal reported again? Nearby + recent + open + visually near-identical photo. */
+async function findDuplicate(lng: number, lat: number, embedding: number[]) {
+  const candidates = await RescueRequest.find({
+    location: { $nearSphere: { $geometry: point(lng, lat), $maxDistance: DUP_RADIUS_M } },
+    createdAt: { $gte: new Date(Date.now() - DUP_WINDOW_H * 3600_000) },
+    status: { $nin: ["recovered", "closed"] },
+    duplicateOf: null,
+  })
+    .select("+embedding assignedNgo location")
+    .limit(20);
+  let best: { doc: (typeof candidates)[number]; score: number } | null = null;
+  for (const c of candidates) {
+    if (!c.embedding?.length) continue;
+    const score = cosine(embedding, c.embedding);
+    if (score >= DUP_SIMILARITY && (!best || score > best.score)) best = { doc: c, score };
+  }
+  return best;
 }
 
 export async function createRequest(input: NewRequest) {
-  const ngos = await findMatchingNgos(input.lng, input.lat);
+  const a = input.analysis;
+  const [ngos, dup] = await Promise.all([
+    findMatchingNgos(input.lng, input.lat),
+    a?.embedding.length ? findDuplicate(input.lng, input.lat, a.embedding) : Promise.resolve(null),
+  ]);
   const request = await RescueRequest.create({
     reporter: input.reporter,
     description: input.description,
@@ -53,11 +82,28 @@ export async function createRequest(input: NewRequest) {
     images: input.images,
     location: point(input.lng, input.lat),
     isEmergency: input.isEmergency,
-    severity: triageSeverity(input.description, input.isEmergency),
+    severity: a?.severity.level ?? triageSeverity(input.description, input.isEmergency),
+    ai: a
+      ? {
+          source: "model",
+          species: a.species.label,
+          speciesConfidence: a.species.confidence,
+          speciesTop: a.species.top,
+          injuryProbability: a.injury.probability,
+          severityScore: a.severity.score,
+          reasons: a.severity.reasons,
+          model: a.model,
+          ms: a.ms,
+        }
+      : { source: "rules" },
+    embedding: a?.embedding,
+    duplicateOf: dup?.doc._id,
+    duplicateScore: dup ? Math.round(dup.score * 1000) / 1000 : undefined,
     nearbyNgoCount: ngos.length,
     statusHistory: [{ status: "submitted", note: input.isEmergency ? "Emergency SOS raised" : "Report submitted" }],
   });
-  void announceNewRequest(request, ngos);
+  if (dup) void announceDuplicate(request, dup.doc._id, ngos);
+  else void announceNewRequest(request, ngos);
   return { request, nearestNgos: ngos.slice(0, 5).map(({ name, distanceKm }) => ({ name, distanceKm })) };
 }
 
@@ -98,13 +144,32 @@ async function announceNewRequest(request: RescueRequestDoc, ngos: { owner: Type
   }
 }
 
+async function announceDuplicate(request: RescueRequestDoc, originalId: Types.ObjectId, ngos: { owner: Types.ObjectId }[]) {
+  const original = await RescueRequest.findById(originalId).select("assignedNgo").populate<{ assignedNgo: { owner: Types.ObjectId } | null }>("assignedNgo", "owner");
+  const recipients = original?.assignedNgo ? [original.assignedNgo.owner] : ngos.map((n) => n.owner);
+  await notify(recipients, {
+    type: "request_new",
+    title: `Another person reported the same ${request.species}`,
+    body: "Linked to the existing case automatically. No new rescue needed.",
+    link: `/dashboard/ngo/cases/${originalId.toString()}`,
+  });
+  emitToAdmins("request:new", { id: request._id.toString(), duplicateOf: originalId.toString() });
+}
+
 async function announceChange(request: RescueRequestDoc, ngoName: string, n: { type: "request_accepted" | "request_status" | "treatment_update"; title: string; body?: string }) {
   const id = request._id.toString();
   const payload = { id, status: request.status };
   const reporter = String(request.reporter);
-  emitToUsers([reporter], "request:updated", payload);
+  // People whose report was merged into this one follow its progress too
+  const dups = await RescueRequest.find({ duplicateOf: request._id }).select("reporter").lean();
+  const followers = [...new Set(dups.map((d) => String(d.reporter)).filter((r) => r !== reporter))];
+  emitToUsers([reporter, ...followers], "request:updated", payload);
   emitToAdmins("request:updated", payload);
   await notify([reporter], { ...n, title: `${ngoName} ${n.title}`, link: `/dashboard/user/reports/${id}` });
+  for (const d of dups) {
+    if (String(d.reporter) === reporter) continue;
+    await notify([d.reporter], { ...n, title: `${ngoName} ${n.title}`, link: `/dashboard/user/reports/${String(d._id)}` });
+  }
 }
 
 export function listMyRequests(reporter: string) {
@@ -125,6 +190,7 @@ export async function getRequestDetail(id: string, viewer: { sub: string; role: 
   const request = await RescueRequest.findById(id)
     .populate("assignedNgo", "name phone email address location")
     .populate("reporter", "name phone email")
+    .populate({ path: "duplicateOf", select: "status assignedNgo createdAt", populate: { path: "assignedNgo", select: "name phone" } })
     .lean();
   if (!request) throw new AppError(404, "Request not found");
 
