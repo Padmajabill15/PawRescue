@@ -60,6 +60,7 @@ const rescueRequestSchema = new Schema(
     ai: { type: aiSchema },
     embedding: { type: [Number], select: false },
     duplicateScore: { type: Number },
+    isDemo: { type: Boolean, default: false, index: true },
     acceptedAt: { type: Date },
     closedAt: { type: Date },
     escalatedAt: { type: Date },

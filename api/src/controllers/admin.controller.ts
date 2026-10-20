@@ -1,7 +1,10 @@
 import { isValidObjectId } from "mongoose";
 import { z } from "zod";
 import { VERIFICATION_STATUSES } from "../models/Ngo";
+import { env } from "../config/env";
 import { getAdminStats } from "../services/admin.service";
+import { exportCsv, getAnalytics } from "../services/analytics.service";
+import { purgeDemo, seedDemo } from "../services/demo.service";
 import { listNgos, listRequestsForAdmin, reviewNgo } from "../services/ngo.service";
 import { AppError } from "../utils/AppError";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -33,4 +36,30 @@ const requestsQuery = z.object({ filter: z.enum(["all", "open", "unassigned", "e
 export const requests = asyncHandler(async (req, res) => {
   const { filter } = requestsQuery.parse(req.query);
   res.json({ success: true, data: await listRequestsForAdmin(filter) });
+});
+
+const analyticsQuery = z.object({
+  days: z.coerce.number().int().min(1).max(365).default(30),
+  demo: z.enum(["true", "false"]).default("true").transform((v) => v === "true"),
+});
+
+export const analytics = asyncHandler(async (req, res) => {
+  const { days, demo } = analyticsQuery.parse(req.query);
+  res.json({ success: true, data: await getAnalytics(days, demo) });
+});
+
+export const analyticsCsv = asyncHandler(async (req, res) => {
+  const { days, demo } = analyticsQuery.parse(req.query);
+  const csv = await exportCsv(days, demo);
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader("Content-Disposition", `attachment; filename="pawrescue-requests-${days}d.csv"`);
+  res.send(csv);
+});
+
+const demoSchema = z.object({ action: z.enum(["seed", "purge"]) });
+
+export const demoData = asyncHandler(async (req, res) => {
+  if (!env.ALLOW_DEMO_DATA) throw new AppError(403, "Demo data is disabled on this server");
+  const { action } = demoSchema.parse(req.body);
+  res.json({ success: true, data: action === "seed" ? await seedDemo() : await purgeDemo() });
 });

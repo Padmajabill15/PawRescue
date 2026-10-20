@@ -3,7 +3,7 @@
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { useEffect } from "react";
-import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { CircleMarker, MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 
 export interface MapMarker {
   id: string;
@@ -102,6 +102,36 @@ export function MarkersMap({ markers, center }: { markers: MapMarker[]; center?:
             </Popup>
           )}
         </Marker>
+      ))}
+    </MapContainer>
+  );
+}
+
+export interface MapPoint {
+  id: string;
+  lat: number;
+  lng: number;
+  color: string;
+  label: string;
+  href?: string;
+}
+
+/** Many small dots (analytics). Colors come from CSS vars resolved by the caller. */
+export function PointsMap({ points }: { points: MapPoint[] }) {
+  const c: [number, number] = points[0] ? [points[0].lat, points[0].lng] : [14.5, 76.0];
+  return (
+    <MapContainer center={c} zoom={7} className="h-full w-full" scrollWheelZoom={false} preferCanvas>
+      {TILE}
+      <FitBounds markers={points.map((p) => ({ id: p.id, lat: p.lat, lng: p.lng }))} />
+      {points.map((p) => (
+        <CircleMarker
+          key={p.id}
+          center={[p.lat, p.lng]}
+          radius={6}
+          pathOptions={{ color: "#ffffff", weight: 1.5, fillColor: p.color, fillOpacity: 0.85 }}
+        >
+          <Popup>{p.href ? <a href={p.href}>{p.label}</a> : p.label}</Popup>
+        </CircleMarker>
       ))}
     </MapContainer>
   );

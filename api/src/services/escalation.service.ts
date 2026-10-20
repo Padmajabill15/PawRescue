@@ -14,6 +14,7 @@ export async function runEscalation() {
     status: "submitted",
     assignedNgo: null,
     duplicateOf: null,
+    isDemo: { $ne: true },
     escalationLevel: { $not: { $gte: 2 } }, // also matches older docs without the field
     createdAt: { $lte: new Date(now - SOS_STEP_MIN * 60_000) },
   })

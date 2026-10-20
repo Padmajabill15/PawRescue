@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   Building2,
   ClipboardList,
   FileWarning,
@@ -37,7 +38,7 @@ export const NAV: Record<Role, NavItem[]> = {
     { href: "/dashboard/admin/ngos", label: "NGO approvals", icon: ShieldCheck },
     { href: "/dashboard/admin/requests", label: "All requests", icon: FileWarning },
     { href: "/dashboard/admin/users", label: "Users", icon: Users, soon: true },
-    { href: "/dashboard/admin/analytics", label: "Analytics", icon: Building2, soon: true },
+    { href: "/dashboard/admin/analytics", label: "Analytics", icon: BarChart3 },
   ],
 };
 

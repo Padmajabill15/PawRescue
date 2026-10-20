@@ -12,4 +12,8 @@ export const MarkersMap = dynamic(() => import("./leaflet-map").then((m) => m.Ma
   ssr: false,
   loading: Loading,
 });
-export type { MapMarker } from "./leaflet-map";
+export const PointsMap = dynamic(() => import("./leaflet-map").then((m) => m.PointsMap), {
+  ssr: false,
+  loading: Loading,
+});
+export type { MapMarker, MapPoint } from "./leaflet-map";

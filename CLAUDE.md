@@ -38,6 +38,11 @@ user | ngo | admin. JWT in httpOnly cookie `token`; web proxies /api -> API (nex
 - Duplicates: same area (500 m) + 48 h + open + cosine >= 0.9 -> duplicateOf; NGOs not re-alerted, duplicate reporters follow the original
 - Setup: npm run setup:ml (Python 3.12 venv in ml/.venv); npm run dev starts web + api + ml
 
+## Analytics (Phase 6 done)
+- api/src/services/analytics.service.ts: one $facet aggregation (KPIs, daily trend, species, severity, weekday x hour, response times, map points) + NGO leaderboard + rule-based insights; CSV export
+- Demo data: services/demo.service.ts (seeded PRNG, isDemo flag, @demo.pawrescue.dev users); POST /api/admin/demo-data {action: seed|purge}; excluded from NGO lists + escalation
+- web: /dashboard/admin/analytics (Recharts, CSS chart vars in globals.css, Leaflet PointsMap)
+
 ## Conventions
 - TypeScript strict, async/await, Zod for validation
 - api: routes -> controllers -> services -> models

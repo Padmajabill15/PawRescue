@@ -216,7 +216,7 @@ export async function nearbyForNgo(ownerId: string) {
         near: point(lng, lat),
         distanceField: "distanceM",
         maxDistance: ngo.serviceRadiusKm * 1000,
-        query: { status: "submitted", assignedNgo: null, duplicateOf: null },
+        query: { status: "submitted", assignedNgo: null, duplicateOf: null, isDemo: { $ne: true } },
         spherical: true,
       },
     },

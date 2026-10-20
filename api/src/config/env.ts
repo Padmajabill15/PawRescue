@@ -17,6 +17,7 @@ const envSchema = z.object({
   CLOUDINARY_API_SECRET: z.string().optional().default(""),
   NGO_MATCH_MAX_KM: z.coerce.number().positive().default(50),
   ML_URL: z.string().default("http://127.0.0.1:8000"),
+  ALLOW_DEMO_DATA: z.enum(["true", "false"]).default("true").transform((v) => v === "true"),
   ML_TIMEOUT_MS: z.coerce.number().int().positive().default(8000),
 });
 
