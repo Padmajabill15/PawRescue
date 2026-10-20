@@ -9,6 +9,8 @@ export function LineDog({ className = "" }: { className?: string }) {
     // body + back legs
     "M60 230 C 60 170, 110 150, 170 152 C 220 154, 250 170, 262 200 L 270 262",
     "M90 214 L 82 268 M120 222 L 118 268 M236 214 L 232 268",
+    // belly + chest
+    "M64 210 C 110 240, 200 236, 240 214 C 252 208, 258 204, 262 200",
     // tail
     "M64 186 C 30 170, 22 132, 40 112",
     // neck + head
@@ -39,8 +41,8 @@ export function LineDog({ className = "" }: { className?: string }) {
         <motion.path
           key={i}
           d={d}
-          stroke={i === 9 ? "hsl(var(--accent))" : i === 7 || i === 8 ? "hsl(var(--destructive))" : "currentColor"}
-          strokeWidth={i === 9 ? 5 : 3}
+          stroke={i === 10 ? "hsl(var(--accent))" : i === 8 || i === 9 ? "hsl(var(--destructive))" : "currentColor"}
+          strokeWidth={i === 10 ? 5 : 3}
           strokeLinecap="round"
           strokeLinejoin="round"
           initial={reduce ? false : { pathLength: 0, opacity: 0 }}
