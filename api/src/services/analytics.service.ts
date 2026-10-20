@@ -5,7 +5,8 @@ import { RescueRequest } from "../models/RescueRequest";
 const TZ = "Asia/Kolkata";
 const DAY = 86_400_000;
 const RESOLVED = ["recovered", "closed"];
-const RESCUED = ["rescued", "treatment", "recovered", "closed"];
+/** A case counts as rescued only if it actually reached "rescued" (not closed as not-found / unassigned). */
+const WAS_RESCUED = { $in: ["rescued", { $ifNull: ["$statusHistory.status", []] }] };
 
 const median = (xs: number[]) => {
   if (!xs.length) return null;
@@ -48,7 +49,7 @@ async function snapshot(days: number, includeDemo: boolean) {
               duplicates: { $sum: { $cond: [{ $ifNull: ["$duplicateOf", false] }, 1, 0] } },
               sos: { $sum: { $cond: ["$isEmergency", 1, 0] } },
               resolved: { $sum: { $cond: [{ $in: ["$status", RESOLVED] }, 1, 0] } },
-              rescued: { $sum: { $cond: [{ $in: ["$status", RESCUED] }, 1, 0] } },
+              rescued: { $sum: { $cond: [WAS_RESCUED, 1, 0] } },
               unassigned: { $sum: { $cond: [{ $and: [{ $eq: ["$status", "submitted"] }, { $not: [{ $ifNull: ["$duplicateOf", false] }] }] }, 1, 0] } },
               escalated: { $sum: { $cond: [{ $gt: [{ $ifNull: ["$escalationLevel", 0] }, 0] }, 1, 0] } },
               avgScore: { $avg: "$ai.severityScore" },
@@ -180,7 +181,7 @@ async function ngoLeaderboard(since: Date, demo: object) {
       $group: {
         _id: "$assignedNgo",
         accepted: { $sum: 1 },
-        rescued: { $sum: { $cond: [{ $in: ["$status", RESCUED] }, 1, 0] } },
+        rescued: { $sum: { $cond: [WAS_RESCUED, 1, 0] } },
         recovered: { $sum: { $cond: [{ $eq: ["$status", "recovered"] }, 1, 0] } },
         sos: { $sum: { $cond: ["$isEmergency", 1, 0] } },
         acceptMins: { $push: { $divide: [{ $subtract: ["$acceptedAt", "$createdAt"] }, 60_000] } },
