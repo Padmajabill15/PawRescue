@@ -1,0 +1,14 @@
+{
+  "name": "pawrescue",
+  "private": true,
+  "workspaces": [
+    "web",
+    "api"
+  ],
+  "scripts": {
+    "dev": "concurrently -n web,api -c cyan,green \"npm run dev -w web\" \"npm run dev -w api\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
