@@ -12,6 +12,10 @@ const envSchema = z.object({
   ADMIN_NAME: z.string().default("PawRescue Admin"),
   ADMIN_EMAIL: z.string().email().optional().or(z.literal("")),
   ADMIN_PASSWORD: z.string().optional().default(""),
+  CLOUDINARY_CLOUD_NAME: z.string().optional().default(""),
+  CLOUDINARY_API_KEY: z.string().optional().default(""),
+  CLOUDINARY_API_SECRET: z.string().optional().default(""),
+  NGO_MATCH_MAX_KM: z.coerce.number().positive().default(50),
 });
 
 const parsed = envSchema.safeParse(process.env);

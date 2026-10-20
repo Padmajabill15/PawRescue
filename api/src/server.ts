@@ -1,10 +1,12 @@
 import app from "./app";
 import { connectDb, disconnectDb } from "./config/db";
 import { env } from "./config/env";
+import { User } from "./models/User";
 import { ensureAdmin } from "./services/auth.service";
 
 async function main() {
   await connectDb();
+  await User.syncIndexes(); // apply index changes (e.g. phone no longer unique)
   await ensureAdmin();
 
   const server = app.listen(env.PORT, () => {

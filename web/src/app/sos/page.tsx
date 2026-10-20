@@ -7,6 +7,7 @@ import { GoogleButton } from "@/components/auth/google-button";
 import { useSession } from "@/components/session-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReportForm } from "@/components/rescue/report-form";
 import { dashboardPath } from "@/lib/auth";
 
 export default function SosPage() {
@@ -17,7 +18,7 @@ export default function SosPage() {
     <div className="relative">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-destructive/10 via-transparent to-transparent" />
       <div className="container flex justify-center py-10 sm:py-16">
-        <Card className="w-full max-w-md">
+        <Card className={user?.role === "user" ? "w-full max-w-2xl" : "w-full max-w-md"}>
           <CardHeader className="items-center text-center">
             <span className="mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-destructive text-destructive-foreground">
               <Siren className="h-7 w-7" />
@@ -32,14 +33,13 @@ export default function SosPage() {
               <div className="flex justify-center py-4">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
+            ) : user?.role === "user" ? (
+              <ReportForm emergency />
             ) : user ? (
               <div className="space-y-4 text-center">
                 <p className="text-sm">
-                  Signed in as <span className="font-medium">{user.name}</span>.
+                  You&apos;re signed in as an {user.role === "ngo" ? "NGO" : "admin"}. Emergency reports are filed by reporters.
                 </p>
-                <div className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
-                  The photo + GPS emergency form is built in the next phase.
-                </div>
                 <Button asChild variant="outline" className="w-full">
                   <Link href={dashboardPath(user.role)}>Go to my dashboard</Link>
                 </Button>

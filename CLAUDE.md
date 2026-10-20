@@ -19,6 +19,12 @@ user | ngo | admin. JWT in httpOnly cookie `token`; web proxies /api -> API (nex
 - First admin auto-created from ADMIN_EMAIL/ADMIN_PASSWORD in api/.env
 - Google sign-in (users only, emergency flag) via GOOGLE_CLIENT_ID / NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
+## Rescue flow (Phase 3 done)
+- api/src/services/request.service.ts: create (geo-match approved NGOs by their serviceRadiusKm), nearby ($geoNear), accept (atomic), status flow, treatment updates
+- Photos: multer -> Cloudinary if CLOUDINARY_* set, else api/uploads served at /api/uploads
+- Severity: rule-based utils/triage.ts (ML replaces later)
+- web: Leaflet/OSM maps in components/map (dynamic, ssr:false); ReportForm used by /dashboard/user/report and /sos
+
 ## Conventions
 - TypeScript strict, async/await, Zod for validation
 - api: routes -> controllers -> services -> models

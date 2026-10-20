@@ -1,4 +1,4 @@
-import { InferSchemaType, model, Schema } from "mongoose";
+import { HydratedDocument, InferSchemaType, model, Schema } from "mongoose";
 import { geoPointSchema } from "./geoPoint";
 
 export const REQUEST_STATUSES = [
@@ -10,6 +10,7 @@ export const REQUEST_STATUSES = [
   "recovered",
   "closed",
 ] as const;
+export const SPECIES = ["dog", "cat", "cow", "bird", "monkey", "wildlife", "reptile", "other"] as const;
 export const SEVERITIES = ["low", "medium", "high", "critical"] as const;
 
 export type RequestStatus = (typeof REQUEST_STATUSES)[number];
@@ -29,14 +30,20 @@ const rescueRequestSchema = new Schema(
     reporter: { type: Schema.Types.ObjectId, ref: "User", required: true },
     images: { type: [String], default: [] },
     description: { type: String, trim: true },
+    address: { type: String, trim: true },
+    contactPhone: { type: String, trim: true },
+    animalCount: { type: Number, default: 1, min: 1 },
     location: { type: geoPointSchema, required: true },
-    species: { type: String, trim: true },
+    species: { type: String, enum: SPECIES, default: "other" },
     severity: { type: String, enum: SEVERITIES, default: "medium" },
     isEmergency: { type: Boolean, default: false },
     status: { type: String, enum: REQUEST_STATUSES, default: "submitted", required: true },
     assignedNgo: { type: Schema.Types.ObjectId, ref: "Ngo" },
     statusHistory: { type: [statusHistorySchema], default: [] },
     duplicateOf: { type: Schema.Types.ObjectId, ref: "RescueRequest" },
+    nearbyNgoCount: { type: Number, default: 0 },
+    acceptedAt: { type: Date },
+    closedAt: { type: Date },
   },
   { timestamps: true },
 );
@@ -47,4 +54,5 @@ rescueRequestSchema.index({ reporter: 1 });
 rescueRequestSchema.index({ assignedNgo: 1 });
 
 export type IRescueRequest = InferSchemaType<typeof rescueRequestSchema>;
+export type RescueRequestDoc = HydratedDocument<IRescueRequest>;
 export const RescueRequest = model("RescueRequest", rescueRequestSchema);

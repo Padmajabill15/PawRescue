@@ -10,7 +10,7 @@ const userSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
     email: { type: String, trim: true, lowercase: true, unique: true, sparse: true },
-    phone: { type: String, trim: true, unique: true, sparse: true },
+    phone: { type: String, trim: true, index: true },
     passwordHash: { type: String, select: false },
     googleId: { type: String, unique: true, sparse: true },
     avatar: { type: String },

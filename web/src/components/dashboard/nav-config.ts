@@ -23,13 +23,13 @@ export interface NavItem {
 export const NAV: Record<Role, NavItem[]> = {
   user: [
     { href: "/dashboard/user", label: "Overview", icon: LayoutDashboard },
-    { href: "/dashboard/user/report", label: "Report a rescue", icon: PlusCircle, soon: true },
-    { href: "/dashboard/user/reports", label: "My reports", icon: ClipboardList, soon: true },
+    { href: "/dashboard/user/report", label: "Report a rescue", icon: PlusCircle },
+    { href: "/dashboard/user/reports", label: "My reports", icon: ClipboardList },
   ],
   ngo: [
     { href: "/dashboard/ngo", label: "Overview", icon: LayoutDashboard },
-    { href: "/dashboard/ngo/requests", label: "Incoming requests", icon: Map, soon: true },
-    { href: "/dashboard/ngo/cases", label: "Active cases", icon: HeartPulse, soon: true },
+    { href: "/dashboard/ngo/requests", label: "Incoming requests", icon: Map },
+    { href: "/dashboard/ngo/cases", label: "My cases", icon: HeartPulse },
     { href: "/dashboard/ngo/settings", label: "NGO profile", icon: Settings, soon: true },
   ],
   admin: [
