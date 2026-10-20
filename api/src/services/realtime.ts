@@ -11,6 +11,7 @@ export const ADMIN_ROOM = "admins";
 export function initRealtime(server: HttpServer) {
   io = new Server(server, {
     path: "/socket.io",
+    addTrailingSlash: false, // works through the Next.js /socket.io rewrite
     cors: { origin: env.CLIENT_ORIGINS, credentials: true },
   });
 

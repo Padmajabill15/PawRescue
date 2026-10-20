@@ -10,8 +10,8 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   if (!claims) redirect("/login");
 
   return (
-    <div className="container grid gap-6 py-6 md:grid-cols-[220px_1fr] md:py-10">
-      <aside className="md:sticky md:top-24 md:self-start">
+    <div className="container grid grid-cols-[minmax(0,1fr)] gap-6 py-6 md:grid-cols-[220px_minmax(0,1fr)] md:py-10">
+      <aside className="min-w-0 md:sticky md:top-24 md:self-start">
         <Sidebar role={claims.role} />
       </aside>
       <div className="min-w-0">{children}</div>

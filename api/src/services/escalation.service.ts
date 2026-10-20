@@ -14,7 +14,7 @@ export async function runEscalation() {
     status: "submitted",
     assignedNgo: null,
     duplicateOf: null,
-    escalationLevel: { $lt: 2 },
+    escalationLevel: { $not: { $gte: 2 } }, // also matches older docs without the field
     createdAt: { $lte: new Date(now - SOS_STEP_MIN * 60_000) },
   })
     .limit(50)
@@ -52,6 +52,7 @@ export async function runEscalation() {
 
 export function startEscalationJob(everyMs = 60_000) {
   const tick = () => runEscalation().catch((e) => console.error("escalation job failed", e));
+  setTimeout(tick, 5_000);
   const timer = setInterval(tick, everyMs);
   timer.unref();
   return timer;

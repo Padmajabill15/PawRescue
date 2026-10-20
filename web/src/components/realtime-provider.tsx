@@ -5,7 +5,8 @@ import { io, type Socket } from "socket.io-client";
 import { useSession } from "@/components/session-provider";
 import { api } from "@/lib/api";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL ?? "http://localhost:5000";
+// Empty = same origin (proxied by next.config rewrites). Set to the API URL to use direct WebSockets.
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || undefined;
 
 const RealtimeContext = createContext<{ socket: Socket | null; connected: boolean }>({ socket: null, connected: false });
 
@@ -16,16 +17,18 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!user) return;
-    const s = io(SOCKET_URL, {
+    const opts = {
       path: "/socket.io",
-      transports: ["websocket", "polling"],
+      addTrailingSlash: false,
+      transports: SOCKET_URL ? ["websocket", "polling"] : ["polling"],
       // Fresh short-lived token on every (re)connect; the session cookie itself stays httpOnly
       auth: (cb) => {
         api<{ token: string }>("/auth/socket-token")
           .then(({ token }) => cb({ token }))
           .catch(() => cb({ token: "" }));
       },
-    });
+    } satisfies Parameters<typeof io>[1];
+    const s = SOCKET_URL ? io(SOCKET_URL, opts) : io(opts);
     s.on("connect", () => setConnected(true));
     s.on("disconnect", () => setConnected(false));
     setSocket(s);
