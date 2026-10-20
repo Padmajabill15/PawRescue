@@ -67,7 +67,7 @@ export default function NgoDashboard() {
             <CardContent className="space-y-3 text-sm">
               {ngo ? (
                 <>
-                  <p className="flex items-start gap-2 text-muted-foreground">
+                  <p className="flex items-start gap-2 break-words text-muted-foreground [overflow-wrap:anywhere]">
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
                     {ngo.address || `${ngo.location.coordinates[1]}, ${ngo.location.coordinates[0]}`}
                   </p>
