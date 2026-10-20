@@ -1,5 +1,6 @@
 import { MapPin, Siren } from "lucide-react";
 import Link from "next/link";
+import { SafeImg } from "@/components/rescue/safe-img";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { SEVERITY_BADGE, SPECIES_EMOJI, STATUS_LABEL, timeAgo, type RescueRequest } from "@/lib/requests";
@@ -9,8 +10,11 @@ export function RequestCard({ r, href, action }: { r: RescueRequest; href: strin
     <Card className="flex gap-4 overflow-hidden p-3 transition-shadow hover:shadow-md">
       <Link href={href} className="shrink-0">
         {r.images[0] ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={r.images[0]} alt="" className="h-24 w-24 rounded-lg object-cover sm:h-28 sm:w-28" />
+          <SafeImg
+            src={r.images[0]}
+            className="h-24 w-24 rounded-lg object-cover sm:h-28 sm:w-28"
+            fallback={<span className="flex h-24 w-24 items-center justify-center rounded-lg bg-muted text-3xl sm:h-28 sm:w-28">{SPECIES_EMOJI[r.species]}</span>}
+          />
         ) : (
           <span className="flex h-24 w-24 items-center justify-center rounded-lg bg-muted text-3xl">{SPECIES_EMOJI[r.species]}</span>
         )}

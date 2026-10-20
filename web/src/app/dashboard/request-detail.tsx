@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { MarkersMap } from "@/components/map";
 import { useRealtime } from "@/components/realtime-provider";
+import { SafeImg } from "@/components/rescue/safe-img";
 import { HistoryList, StatusStepper } from "@/components/rescue/status-timeline";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -173,8 +174,7 @@ export function RequestDetailView({
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {data.images.map((src) => (
                   <a key={src} href={src} target="_blank" rel="noreferrer">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt="" className="aspect-square w-full rounded-lg object-cover" />
+                    <SafeImg src={src} className="aspect-square w-full rounded-lg object-cover" fallback={<span className="flex aspect-square items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">Photo unavailable</span>} />
                   </a>
                 ))}
               </div>
@@ -196,8 +196,7 @@ export function RequestDetailView({
                         <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                           {u.images.map((src) => (
                             <a key={src} href={src} target="_blank" rel="noreferrer">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={src} alt="" className="aspect-square w-full rounded-md object-cover" />
+                              <SafeImg src={src} className="aspect-square w-full rounded-md object-cover" />
                             </a>
                           ))}
                         </div>
