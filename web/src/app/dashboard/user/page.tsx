@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { EmptyState, PageHeader, StatCard } from "@/components/dashboard/stat-card";
 import { FadeIn } from "@/components/motion/fade-in";
 import { useRealtime } from "@/components/realtime-provider";
+import { KarmaCard } from "@/components/rescue/karma-card";
 import { RequestCard } from "@/components/rescue/request-card";
 import { useSession } from "@/components/session-provider";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,12 @@ export default function UserDashboard() {
         <StatCard label="Animals rescued" value={v(rescued)} icon={PawPrint} tone="accent" />
         <StatCard label="NGOs that helped" value={v(ngos)} icon={HeartHandshake} tone="warning" />
       </FadeIn>
+
+      {rows && (
+        <FadeIn delay={0.05} className="mt-6">
+          <KarmaCard reports={rows} />
+        </FadeIn>
+      )}
 
       <FadeIn delay={0.1} className="mt-6">
         <Card>
