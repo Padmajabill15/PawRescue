@@ -21,7 +21,7 @@ export function PhotoBand() {
     <section aria-label="Animals" className="container pb-16">
       <div className="grid auto-rows-[160px] grid-cols-2 gap-3 sm:auto-rows-[200px] md:grid-cols-4">
         {shown.slice(0, 5).map((p, i) => (
-          <figure key={p.id} className={cn("overflow-hidden rounded-xl bg-muted", i === 0 && "row-span-2 md:col-span-2", i === 3 && "md:col-span-2")}>
+          <figure key={p.id} className={cn("overflow-hidden rounded-xl bg-muted", i === 0 && "row-span-2 md:col-span-2")}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`https://images.unsplash.com/${p.id}?auto=format&fit=crop&w=900&q=70`}
