@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { adminDeletion, adminUsers } from "../controllers/account.controller";
-import { analytics, analyticsCsv, demoData, ngos, requests, review, stats } from "../controllers/admin.controller";
+import { analytics, analyticsCsv, dataSheet, demoData, ngos, requests, review, stats } from "../controllers/admin.controller";
 import { requireAuth, requireRole } from "../middleware/auth";
 
 const router = Router();
@@ -14,6 +14,7 @@ router.get("/analytics", analytics);
 router.get("/analytics/export.csv", analyticsCsv);
 router.post("/demo-data", demoData);
 router.get("/users", adminUsers);
+router.get("/data/:sheet", dataSheet);
 router.post("/users/:id/deletion", adminDeletion);
 
 export default router;

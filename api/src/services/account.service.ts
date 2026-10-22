@@ -98,7 +98,7 @@ export function listUsers(filter: "all" | "user" | "ngo" | "deletion") {
         : { role: filter, isActive: true };
   return User.find({ ...q, email: { $not: /@demo\.pawrescue\.dev$/ } })
     .sort({ "deletionRequest.requestedAt": -1, createdAt: -1 })
-    .limit(300)
+    .limit(5000)
     .select("name email phone role authProvider isEmergencyUser deletionRequest createdAt")
     .lean();
 }

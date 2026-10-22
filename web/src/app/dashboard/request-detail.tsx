@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Building2, Copy, Loader2, MapPin, Phone, Siren, Sparkles } from "lucide-react";
+import { ArrowLeft, Building2, Copy, Loader2, Mail, MapPin, Phone, Siren, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { MarkersMap } from "@/components/map";
@@ -250,11 +250,19 @@ export function RequestDetailView({
             </CardHeader>
             <CardContent className="space-y-1 text-sm">
               {ngo ? (
-                ngo.phone && (
-                  <a href={`tel:${ngo.phone}`} className="flex items-center gap-2 text-primary hover:underline">
-                    <Phone className="h-4 w-4" /> {ngo.phone}
-                  </a>
-                )
+                <>
+                  {ngo.phone && (
+                    <a href={`tel:${ngo.phone}`} className="flex items-center gap-2 text-primary hover:underline">
+                      <Phone className="h-4 w-4" /> {ngo.phone}
+                    </a>
+                  )}
+                  {ngo.email && (
+                    <a href={`mailto:${ngo.email}`} className="flex items-center gap-2 text-primary hover:underline [overflow-wrap:anywhere]">
+                      <Mail className="h-4 w-4 shrink-0" /> {ngo.email}
+                    </a>
+                  )}
+                  {ngo.address && <p className="flex items-start gap-2 text-muted-foreground [overflow-wrap:anywhere]"><MapPin className="mt-0.5 h-4 w-4 shrink-0" /> {ngo.address}</p>}
+                </>
               ) : (
                 <p className="text-muted-foreground">
                   {data.nearbyNgoCount
@@ -269,6 +277,11 @@ export function RequestDetailView({
                   {(data.contactPhone || reporter.phone) && (
                     <a href={`tel:${data.contactPhone || reporter.phone}`} className="flex items-center gap-2 text-primary hover:underline">
                       <Phone className="h-4 w-4" /> {data.contactPhone || reporter.phone}
+                    </a>
+                  )}
+                  {reporter.email && (
+                    <a href={`mailto:${reporter.email}`} className="flex items-center gap-2 text-primary hover:underline [overflow-wrap:anywhere]">
+                      <Mail className="h-4 w-4 shrink-0" /> {reporter.email}
                     </a>
                   )}
                 </div>

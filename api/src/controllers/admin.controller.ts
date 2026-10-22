@@ -4,6 +4,7 @@ import { VERIFICATION_STATUSES } from "../models/Ngo";
 import { env } from "../config/env";
 import { getAdminStats } from "../services/admin.service";
 import { exportCsv, getAnalytics } from "../services/analytics.service";
+import { ngoDirectory, ngosSheet, requestsSheet, usersSheet } from "../services/data.service";
 import { purgeDemo, seedDemo } from "../services/demo.service";
 import { listNgos, listRequestsForAdmin, reviewNgo } from "../services/ngo.service";
 import { AppError } from "../utils/AppError";
@@ -62,4 +63,19 @@ export const demoData = asyncHandler(async (req, res) => {
   if (!env.ALLOW_DEMO_DATA) throw new AppError(403, "Demo data is disabled on this server");
   const { action } = demoSchema.parse(req.body);
   res.json({ success: true, data: action === "seed" ? await seedDemo() : await purgeDemo() });
+});
+
+const sheetQuery = z.object({
+  sheet: z.enum(["users", "ngos", "requests"]),
+  demo: z.enum(["true", "false"]).default("false").transform((v) => v === "true"),
+});
+
+export const dataSheet = asyncHandler(async (req, res) => {
+  const { sheet, demo } = sheetQuery.parse({ ...req.query, sheet: req.params.sheet });
+  const fn = sheet === "users" ? usersSheet : sheet === "ngos" ? ngosSheet : requestsSheet;
+  res.json({ success: true, data: await fn(demo) });
+});
+
+export const directory = asyncHandler(async (_req, res) => {
+  res.json({ success: true, data: await ngoDirectory() });
 });
