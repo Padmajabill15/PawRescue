@@ -10,6 +10,7 @@ import { Input, Textarea } from "@/components/ui/input";
 import { Field } from "@/components/ui/label";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { ORG, PASSWORD, PHONE } from "@/lib/validation";
 
 const SPECIALIZATIONS = ["dogs", "cats", "cattle", "birds", "wildlife", "reptiles", "other"] as const;
 
@@ -97,7 +98,7 @@ export default function NgoApplyPage() {
 
         <section className="grid gap-4 sm:grid-cols-2">
           <Field label="NGO name" htmlFor="name">
-            <Input id="name" name="name" required minLength={2} />
+            <Input id="name" name="name" required {...ORG} />
           </Field>
           <Field label="Registration number (optional)" htmlFor="registrationNumber">
             <Input id="registrationNumber" name="registrationNumber" />
@@ -106,10 +107,10 @@ export default function NgoApplyPage() {
             <Input id="email" name="email" type="email" required />
           </Field>
           <Field label="Phone" htmlFor="phone">
-            <Input id="phone" name="phone" type="tel" required minLength={7} />
+            <Input id="phone" name="phone" type="tel" required {...PHONE} />
           </Field>
           <Field label="Password" htmlFor="password">
-            <Input id="password" name="password" type="password" autoComplete="new-password" required minLength={8} />
+            <Input id="password" name="password" type="password" autoComplete="new-password" required {...PASSWORD} />
           </Field>
           <Field label="Confirm password" htmlFor="confirm">
             <Input id="confirm" name="confirm" type="password" autoComplete="new-password" required minLength={8} />

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/label";
 import { api } from "@/lib/api";
 import type { SessionUser } from "@/lib/auth";
+import { PERSON, PHONE } from "@/lib/validation";
 
 export function QuickSos() {
   const { setUser } = useSession();
@@ -36,10 +37,10 @@ export function QuickSos() {
     <form onSubmit={onSubmit} className="space-y-4">
       {error && <Alert>{error}</Alert>}
       <Field label="Your name" htmlFor="sos-name">
-        <Input id="sos-name" name="name" autoComplete="name" required minLength={2} />
+        <Input id="sos-name" name="name" autoComplete="name" required {...PERSON} />
       </Field>
       <Field label="Phone number" htmlFor="sos-phone" hint="The NGO calls this number to find the animal.">
-        <Input id="sos-phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" required />
+        <Input id="sos-phone" name="phone" type="tel" autoComplete="tel" required {...PHONE} />
       </Field>
       <Button type="submit" variant="destructive" size="lg" className="w-full text-base font-bold" disabled={busy}>
         {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <Siren className="h-5 w-5" />}

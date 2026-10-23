@@ -14,6 +14,7 @@ import { Field } from "@/components/ui/label";
 import { api } from "@/lib/api";
 import { SPECIES, SPECIES_EMOJI, type RescueRequest, type Species } from "@/lib/requests";
 import { cn } from "@/lib/utils";
+import { PHONE } from "@/lib/validation";
 
 const FALLBACK = { lat: 15.8497, lng: 74.4977 }; // Belagavi
 
@@ -144,7 +145,7 @@ export function ReportForm({ emergency = false }: { emergency?: boolean }) {
       </section>
 
       <Field label="What happened?" htmlFor="description" hint="E.g. hit by a bike, bleeding from the leg, can't stand.">
-        <Textarea id="description" name="description" maxLength={1000} required={!emergency} />
+        <Textarea id="description" name="description" maxLength={1000} required={!emergency && !isEmergency} minLength={isEmergency ? undefined : 10} />
       </Field>
 
       {!emergency && (
@@ -161,7 +162,7 @@ export function ReportForm({ emergency = false }: { emergency?: boolean }) {
       )}
 
       <Field label="Your phone (so the NGO can reach you)" htmlFor="contactPhone">
-        <Input id="contactPhone" name="contactPhone" type="tel" maxLength={20} required={emergency} defaultValue={user?.phone ?? ""} />
+        <Input id="contactPhone" name="contactPhone" type="tel" maxLength={20} required={emergency} defaultValue={user?.phone ?? ""} {...PHONE} />
       </Field>
 
       {!emergency && (

@@ -11,6 +11,7 @@ import { Input, Textarea } from "@/components/ui/input";
 import { Field } from "@/components/ui/label";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { ORG, PHONE } from "@/lib/validation";
 
 const SPECIALIZATIONS = ["dogs", "cats", "cattle", "birds", "wildlife", "reptiles", "other"] as const;
 
@@ -82,8 +83,8 @@ export default function NgoSettingsPage() {
           <CardContent className="pt-6">
             <form onSubmit={save} className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="NGO name" htmlFor="name"><Input id="name" name="name" defaultValue={ngo.name} required minLength={2} /></Field>
-                <Field label="Phone" htmlFor="phone"><Input id="phone" name="phone" type="tel" defaultValue={ngo.phone} required minLength={7} /></Field>
+                <Field label="NGO name" htmlFor="name"><Input id="name" name="name" defaultValue={ngo.name} required {...ORG} /></Field>
+                <Field label="Phone" htmlFor="phone"><Input id="phone" name="phone" type="tel" defaultValue={ngo.phone} required {...PHONE} /></Field>
                 <Field label="Official email" htmlFor="email" hint="Contact the admin to change it."><Input id="email" value={ngo.email} disabled /></Field>
                 <Field label="Address" htmlFor="address"><Input id="address" name="address" defaultValue={ngo.address ?? ""} /></Field>
                 <Field label="Service radius (km)" htmlFor="serviceRadiusKm"><Input id="serviceRadiusKm" name="serviceRadiusKm" type="number" min={1} max={200} defaultValue={ngo.serviceRadiusKm} /></Field>

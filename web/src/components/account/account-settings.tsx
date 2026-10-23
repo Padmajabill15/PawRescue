@@ -14,6 +14,7 @@ import { Field } from "@/components/ui/label";
 import { Avatar } from "@/components/user-menu";
 import { api } from "@/lib/api";
 import type { SessionUser } from "@/lib/auth";
+import { PASSWORD, PERSON, PHONE } from "@/lib/validation";
 
 type Msg = { kind: "error" | "success"; text: string } | null;
 
@@ -109,10 +110,10 @@ export function AccountSettings({ extra }: { extra?: ReactNode }) {
             <form onSubmit={saveProfile} className="grid gap-4 sm:grid-cols-2">
               {profile.msg && <div className="sm:col-span-2"><Alert kind={profile.msg.kind}>{profile.msg.text}</Alert></div>}
               <Field label="Name" htmlFor="name">
-                <Input id="name" name="name" defaultValue={user.name} required minLength={2} />
+                <Input id="name" name="name" defaultValue={user.name} required {...PERSON} />
               </Field>
               <Field label="Phone" htmlFor="phone">
-                <Input id="phone" name="phone" type="tel" defaultValue={user.phone ?? ""} />
+                <Input id="phone" name="phone" type="tel" defaultValue={user.phone ?? ""} {...PHONE} />
               </Field>
               <Field label="Email" htmlFor="email" hint="Email can't be changed here.">
                 <Input id="email" value={user.email ?? "Not set"} disabled />
@@ -148,7 +149,7 @@ export function AccountSettings({ extra }: { extra?: ReactNode }) {
                 </Field>
               )}
               <Field label="New password" htmlFor="newPassword">
-                <Input id="newPassword" name="newPassword" type="password" autoComplete="new-password" required minLength={8} />
+                <Input id="newPassword" name="newPassword" type="password" autoComplete="new-password" required {...PASSWORD} />
               </Field>
               <Field label="Confirm new password" htmlFor="confirm">
                 <Input id="confirm" name="confirm" type="password" autoComplete="new-password" required minLength={8} />

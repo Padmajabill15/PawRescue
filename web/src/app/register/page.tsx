@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/label";
 import { api } from "@/lib/api";
 import { dashboardPath, type SessionUser } from "@/lib/auth";
+import { PASSWORD, PERSON, PHONE } from "@/lib/validation";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -57,17 +58,17 @@ export default function RegisterPage() {
       <form onSubmit={onSubmit} className="space-y-4">
         {error && <Alert>{error}</Alert>}
         <Field label="Full name" htmlFor="name">
-          <Input id="name" name="name" autoComplete="name" required minLength={2} />
+          <Input id="name" name="name" autoComplete="name" required {...PERSON} />
         </Field>
         <Field label="Email" htmlFor="email">
           <Input id="email" name="email" type="email" autoComplete="email" required />
         </Field>
         <Field label="Phone (optional)" htmlFor="phone">
-          <Input id="phone" name="phone" type="tel" autoComplete="tel" />
+          <Input id="phone" name="phone" type="tel" autoComplete="tel" {...PHONE} />
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Password" htmlFor="password">
-            <Input id="password" name="password" type="password" autoComplete="new-password" required minLength={8} />
+            <Input id="password" name="password" type="password" autoComplete="new-password" required {...PASSWORD} />
           </Field>
           <Field label="Confirm" htmlFor="confirm">
             <Input id="confirm" name="confirm" type="password" autoComplete="new-password" required minLength={8} />

@@ -16,6 +16,8 @@ import { analyzeReport, mlHealth, suggestSpecies } from "../services/ml.service"
 import { saveImages } from "../services/upload.service";
 import { AppError } from "../utils/AppError";
 import { asyncHandler } from "../utils/asyncHandler";
+import { optionalPhone } from "../utils/validators";
+import { assertRealImages } from "../services/upload.service";
 
 const createSchema = z.object({
   description: z.string().trim().max(1000).optional(),
@@ -23,12 +25,17 @@ const createSchema = z.object({
   lat: z.coerce.number().min(-90).max(90),
   lng: z.coerce.number().min(-180).max(180),
   address: z.string().trim().max(300).optional(),
-  contactPhone: z.string().trim().max(20).optional(),
+  contactPhone: optionalPhone.optional(),
   animalCount: z.coerce.number().int().min(1).max(50).default(1),
   isEmergency: z
     .union([z.boolean(), z.enum(["true", "false"])])
     .transform((v) => v === true || v === "true")
     .default(false),
+}).superRefine((v, ctx) => {
+  // Non-emergency reports need a short description; an SOS can be sent with just a photo
+  if (!v.isEmergency && (v.description ?? "").length < 10) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["description"], message: "Please describe what happened (at least 10 characters)" });
+  }
 });
 
 const statusSchema = z.object({
@@ -48,6 +55,7 @@ export const create = asyncHandler(async (req, res) => {
   const body = createSchema.parse(req.body);
   const files = req.files as Express.Multer.File[] | undefined;
   if (!files?.length) throw new AppError(400, "Please add at least one photo of the animal");
+  assertRealImages(files);
   const [images, analysis] = await Promise.all([
     saveImages(files, "requests"),
     analyzeReport(files, body.description, body.isEmergency),
@@ -84,12 +92,14 @@ export const setStatus = asyncHandler(async (req, res) => {
 export const postUpdate = asyncHandler(async (req, res) => {
   const id = idParam(req);
   const { notes } = updateSchema.parse(req.body);
+  assertRealImages(req.files as Express.Multer.File[] | undefined);
   const images = await saveImages(req.files as Express.Multer.File[] | undefined, "updates");
   res.status(201).json({ success: true, data: await addTreatmentUpdate(id, req.auth!.sub, notes, images) });
 });
 
 export const aiSpecies = asyncHandler(async (req, res) => {
   if (!req.file) throw new AppError(400, "Please attach a photo");
+  assertRealImages([req.file]);
   const result = await suggestSpecies(req.file);
   res.json({ success: true, data: result ?? { top: [] } });
 });

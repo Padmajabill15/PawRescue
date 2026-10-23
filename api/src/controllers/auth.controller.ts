@@ -13,6 +13,7 @@ import {
 import { AppError } from "../utils/AppError";
 import { asyncHandler } from "../utils/asyncHandler";
 import { AUTH_COOKIE, signSocketToken } from "../utils/jwt";
+import { optionalPhone, password, personName, phone } from "../utils/validators";
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
@@ -28,10 +29,10 @@ function sendSession(res: Response, user: UserDoc, status = 200) {
 }
 
 const registerSchema = z.object({
-  name: z.string().trim().min(2).max(80),
+  name: personName,
   email: z.string().trim().email(),
-  phone: z.string().trim().max(20).optional(),
-  password: z.string().min(8, "Password must be at least 8 characters").max(100),
+  phone: optionalPhone.optional(),
+  password,
 });
 
 const loginSchema = z.object({
@@ -45,16 +46,13 @@ const googleSchema = z.object({
 });
 
 const quickSosSchema = z.object({
-  name: z.string().trim().min(2, "Please enter your name").max(80),
-  phone: z
-    .string()
-    .trim()
-    .regex(/^[+]?[0-9][0-9 -]{6,15}$/, "Please enter a valid phone number"),
+  name: personName,
+  phone,
 });
 
 export const quickSos = asyncHandler(async (req, res) => {
   const { name, phone } = quickSosSchema.parse(req.body);
-  sendSession(res, await createGuest(name, phone.replace(/[ -]/g, "")), 201);
+  sendSession(res, await createGuest(name, phone), 201);
 });
 
 export const register = asyncHandler(async (req, res) => {

@@ -16,13 +16,13 @@ import {
 import { toPublicUser } from "../services/auth.service";
 import { AppError } from "../utils/AppError";
 import { asyncHandler } from "../utils/asyncHandler";
+import { optionalPhone, orgName, password as strongPassword, personName, phone as indianPhone } from "../utils/validators";
 
-const password = z.string().min(8, "Password must be at least 8 characters").max(100);
-const phone = z.string().trim().regex(/^$|^[+]?[0-9][0-9 -]{6,15}$/, "Please enter a valid phone number");
+const password = strongPassword;
 
 export const updateMe = asyncHandler(async (req, res) => {
-  const body = z.object({ name: z.string().trim().min(2).max(80).optional(), phone: phone.optional() }).parse(req.body);
-  const user = await updateProfile(req.auth!.sub, { ...body, phone: body.phone?.replace(/[ -]/g, "") });
+  const body = z.object({ name: personName.optional(), phone: optionalPhone.optional() }).parse(req.body);
+  const user = await updateProfile(req.auth!.sub, { name: body.name, phone: "phone" in req.body ? (body.phone ?? "") : undefined });
   res.json({ success: true, data: { user: toPublicUser(user) } });
 });
 
@@ -60,8 +60,8 @@ export const deleteCancel = asyncHandler(async (req, res) => {
 export const updateNgo = asyncHandler(async (req, res) => {
   const body = z
     .object({
-      name: z.string().trim().min(2).max(120).optional(),
-      phone: z.string().trim().min(7).max(20).optional(),
+      name: orgName.optional(),
+      phone: indianPhone.optional(),
       address: z.string().trim().max(300).optional(),
       description: z.string().trim().max(1000).optional(),
       serviceRadiusKm: z.coerce.number().min(1).max(200).optional(),

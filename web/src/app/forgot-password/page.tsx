@@ -8,6 +8,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/label";
+import { PASSWORD } from "@/lib/validation";
 
 async function post(path: string, body: unknown) {
   const res = await fetch(`/api${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -87,7 +88,7 @@ export default function ForgotPasswordPage() {
           </Field>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="New password" htmlFor="newPassword">
-              <Input id="newPassword" name="newPassword" type="password" autoComplete="new-password" required minLength={8} />
+              <Input id="newPassword" name="newPassword" type="password" autoComplete="new-password" required {...PASSWORD} />
             </Field>
             <Field label="Confirm" htmlFor="confirm">
               <Input id="confirm" name="confirm" type="password" autoComplete="new-password" required minLength={8} />

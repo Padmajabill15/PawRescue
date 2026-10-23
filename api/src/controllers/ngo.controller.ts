@@ -2,12 +2,13 @@ import { z } from "zod";
 import { SPECIALIZATIONS } from "../models/Ngo";
 import { applyNgo, getNgoForOwner } from "../services/ngo.service";
 import { asyncHandler } from "../utils/asyncHandler";
+import { orgName, password, phone } from "../utils/validators";
 
 const applySchema = z.object({
-  name: z.string().trim().min(2).max(120),
+  name: orgName,
   email: z.string().trim().email(),
-  phone: z.string().trim().min(7).max(20),
-  password: z.string().min(8, "Password must be at least 8 characters").max(100),
+  phone,
+  password,
   address: z.string().trim().max(300).optional(),
   description: z.string().trim().max(1000).optional(),
   registrationNumber: z.string().trim().max(60).optional(),
